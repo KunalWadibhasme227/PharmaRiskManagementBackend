@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>net9.0</TargetFramework>
+
+	  <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\CyberHygiene\**" />
+    <EmbeddedResource Remove="Models\CyberHygiene\**" />
+    <None Remove="Models\CyberHygiene\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Constants\Pharma RM\" />
+    <Folder Include="Models\Dtos\Pharma RM\" />
+    <Folder Include="Models\Pharma RM\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
+  </ItemGroup>
+
+</Project>
