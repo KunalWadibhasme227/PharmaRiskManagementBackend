@@ -11,6 +11,8 @@ namespace Services.IRepositories
 
         IAuditTypeRepository AuditType { get; }
         IAuditorRepository Auditor { get; }
+        IMasterGlobalCodeRepository MasterGlobalCode { get; }
+        IMasterGlobalCodeTypeRepository MasterGlobalCodeType { get; }
         Task SaveAsync();
     }
 }
