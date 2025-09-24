@@ -12,19 +12,21 @@ namespace Services.Managers
         private readonly Lazy<IAuditTypeService> _auditTypeService;
         private readonly Lazy<IAuditorService> _auditorService;
         private readonly Lazy<ICommonService> _commonService;
-
+        private readonly Lazy<IAuditService> _auditService;
         public ServiceManager(IRepositoryManager repository)
         {
             _auditTypeService = new Lazy<IAuditTypeService>(() =>
                 new AuditTypeService(repository));
             _auditorService = new Lazy<IAuditorService>(() =>
                 new AuditorService(repository));
+
+            _auditService = new Lazy<IAuditService>(() => new AuditService(repository));
             _commonService = new Lazy<ICommonService>(() => new CommonService(repository)); 
         }
 
         public IAuditTypeService AuditTypeService => _auditTypeService.Value;
         public IAuditorService AuditorService => _auditorService.Value;
         public ICommonService CommonService => _commonService.Value;
-
+        public IAuditService AuditService => _auditService.Value;
     }
 }

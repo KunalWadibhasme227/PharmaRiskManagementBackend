@@ -16,11 +16,9 @@ namespace Common.Models.Dtos.Pharma_RM
 
     public class AuditTypeForCreationDto
     {
-        [Required]
-        [MaxLength(100)]
+      
         public string TypeName { get; set; }
 
-        [MaxLength(250)]
         public string? Description { get; set; }
     }
 
