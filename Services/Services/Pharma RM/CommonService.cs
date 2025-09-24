@@ -22,5 +22,11 @@ namespace Services.Services.Pharma_RM
             var states = _repositoryManager.CommonApiRepository.GetAllStates();
             return states;
         }
+
+        public Task<List<Cities>> GetAllCitiesAsync(int Id)
+        {
+            var cities = _repositoryManager.CommonApiRepository.GetCities(Id);
+            return cities;
+        }
     }
 }

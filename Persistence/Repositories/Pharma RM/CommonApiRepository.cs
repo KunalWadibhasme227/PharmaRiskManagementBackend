@@ -19,5 +19,8 @@ namespace Persistence.Repositories.Pharma_RM
         }
         public async Task<List<States>> GetAllStates()
             => await _context.States.ToListAsync();
+
+        public async Task<List<Cities>> GetCities(int Id)
+            => await _context.Cities.Where(x =>x.StateId == Id).ToListAsync();
     }
 }

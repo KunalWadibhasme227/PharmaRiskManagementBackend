@@ -10,5 +10,6 @@ namespace Services.IRepositories.Pharma_RM
     public interface ICommonApiRepository
     {
         public Task<List<States>> GetAllStates();
+        public Task<List<Cities>> GetCities(int Id);
     }
 }

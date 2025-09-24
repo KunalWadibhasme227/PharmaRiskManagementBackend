@@ -10,5 +10,6 @@ namespace Services.IServices.Shared
     public interface ICommonService
     {
         Task<List<States>> GetAllStateAsync();
+        Task<List<Cities>> GetAllCitiesAsync(int Id);
     }
 }
