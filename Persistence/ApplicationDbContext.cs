@@ -15,6 +15,8 @@ namespace Persistence
         public DbSet<AuditTypeMaster> AuditTypeMasters { get; set; }
         public DbSet<MasterGlobalCode> MasterGlobalCode { get; set; }
         public DbSet<MasterGlobalCodeType> MasterGlobalCodeType { get; set; }
+        public DbSet<States> States { get; set; }
+        public DbSet<Cities> Cities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
