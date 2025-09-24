@@ -1,5 +1,6 @@
 ﻿using Common.Models.Dtos.Pharma_RM;
 using Microsoft.AspNetCore.Mvc;
+using Services.IServices;
 using Services.IServices.Pharma_RM;
 
 namespace WebApi.Controllers.Pharma_RM.AuditFolder
@@ -8,23 +9,23 @@ namespace WebApi.Controllers.Pharma_RM.AuditFolder
     [ApiController]
     public class AuditController : ControllerBase
     {
-        private readonly IAuditService _auditService;
+        private readonly IServiceManager _service;
 
-        public AuditController(IAuditService auditService)
+        public AuditController(IServiceManager service)
         {
-            _auditService = auditService;
+            _service = service;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AuditDto>>> GetAll()
         {
-            return Ok(await _auditService.GetAllAsync());
+            return Ok(await _service.AuditService.GetAllAsync());
         }
 
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<AuditDto>> GetById(Guid id)
         {
-            var audit = await _auditService.GetByIdAsync(id);
+            var audit = await _service.AuditService.GetByIdAsync(id);
             if (audit == null) return NotFound();
             return Ok(audit);
         }
@@ -32,7 +33,7 @@ namespace WebApi.Controllers.Pharma_RM.AuditFolder
         [HttpPost]
         public async Task<ActionResult<AuditDto>> Create([FromBody] AuditCreateDto dto)
         {
-            var created = await _auditService.CreateAsync(dto);
+            var created = await _service.AuditService.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = created.AuditId }, created);
         }
 
@@ -41,7 +42,7 @@ namespace WebApi.Controllers.Pharma_RM.AuditFolder
         {
             if (id != dto.AuditId) return BadRequest("ID mismatch");
 
-            var success = await _auditService.UpdateAsync(dto);
+            var success = await _service.AuditService.UpdateAsync(dto);
             if (!success) return NotFound();
 
             return NoContent();
@@ -50,7 +51,7 @@ namespace WebApi.Controllers.Pharma_RM.AuditFolder
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var success = await _auditService.DeleteAsync(id);
+            var success = await _service.AuditService.DeleteAsync(id);
             if (!success) return NotFound();
 
             return NoContent();

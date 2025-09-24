@@ -1,8 +1,14 @@
+using Common.Models.Dtos.Pharma_RM;
 using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Persistence.Repositories;
 using Serilog;
+using Services.IRepositories;
+using Services.IServices;
+using Services.Managers;
 using WebApi.Configuration;
 using WebApi.Middleware;
 
@@ -65,8 +71,12 @@ builder.Services.AddCors(options =>
 
 #endregion
 
-builder.Services.AddControllers();
 
+builder.Services.AddScoped<IServiceManager, ServiceManager>();
+builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
+builder.Services.AddControllers();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<AuditTypeForCreationDtoValidator>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMemoryCache();

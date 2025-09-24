@@ -9,15 +9,13 @@ namespace WebApi.Controllers
     [ApiVersion("1.0")]
     public class MasterAuditType(
      IServiceManager service,
-     ILogger<MasterAuditType> logger,
-     IValidator<AuditTypeForCreationDto> createValidator,
-     IValidator<AuditTypeForUpdateDto> updateValidator)
+     ILogger<MasterAuditType> logger)
+   
      : BaseApiController
     {
         private readonly IServiceManager _service = service;
         private readonly ILogger<MasterAuditType> _logger = logger;
-        private readonly IValidator<AuditTypeForCreationDto> _createValidator = createValidator;
-        private readonly IValidator<AuditTypeForUpdateDto> _updateValidator = updateValidator;
+        
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -36,9 +34,7 @@ namespace WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AuditTypeForCreationDto dto)
         {
-            var validation = await _createValidator.ValidateAsync(dto);
-            if (!validation.IsValid)
-                return BadRequest(validation.Errors);
+          
 
             var result = await _service.AuditTypeService.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = result.AuditTypeId }, result);
@@ -47,9 +43,7 @@ namespace WebApi.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, [FromBody] AuditTypeForUpdateDto dto)
         {
-            var validation = await _updateValidator.ValidateAsync(dto);
-            if (!validation.IsValid)
-                return BadRequest(validation.Errors);
+            
 
             var success = await _service.AuditTypeService.UpdateAsync(id, dto);
             return success ? NoContent() : NotFound();
