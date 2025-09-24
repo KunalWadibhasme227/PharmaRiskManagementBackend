@@ -42,7 +42,6 @@
 
   <ItemGroup>
     <Folder Include="Configuration\Validators\" />
-    <Folder Include="Controllers\Pharma RM\" />
   </ItemGroup>
 
 </Project>

@@ -11,6 +11,8 @@ namespace Services.IRepositories
 
         IAuditTypeRepository AuditType { get; }
         IAuditorRepository Auditor { get; }
+        IAuditRepository Audit { get; }
+
         Task SaveAsync();
     }
 }
