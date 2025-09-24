@@ -2,6 +2,7 @@
 using Services.IRepositories;
 using Services.IServices;
 using Services.IServices.Pharma_RM;
+using Services.IServices.Shared;
 using Services.Services.Pharma_RM;
 
 namespace Services.Managers
@@ -10,6 +11,7 @@ namespace Services.Managers
     {
         private readonly Lazy<IAuditTypeService> _auditTypeService;
         private readonly Lazy<IAuditorService> _auditorService;
+        private readonly Lazy<ICommonService> _commonService;
 
         public ServiceManager(IRepositoryManager repository)
         {
@@ -17,9 +19,12 @@ namespace Services.Managers
                 new AuditTypeService(repository));
             _auditorService = new Lazy<IAuditorService>(() =>
                 new AuditorService(repository));
+            _commonService = new Lazy<ICommonService>(() => new CommonService(repository)); 
         }
 
         public IAuditTypeService AuditTypeService => _auditTypeService.Value;
         public IAuditorService AuditorService => _auditorService.Value;
+        public ICommonService CommonService => _commonService.Value;
+
     }
 }
