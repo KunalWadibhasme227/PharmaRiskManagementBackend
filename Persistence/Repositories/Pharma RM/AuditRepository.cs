@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Pharma_RM;
+﻿using Common.Models.Dtos.Pharma_RM;
+using Domain.Entities.Pharma_RM;
 using Microsoft.EntityFrameworkCore;
 using Services.IRepositories.Pharma_RM;
 using System;
@@ -18,9 +19,27 @@ namespace Persistence.Repositories.Pharma_RM
             _context = context;
         }
 
-        public async Task<IEnumerable<Audit>> GetAllAsync() 
+
+        public async Task<PagedAuditDetailDto> GetAllAsync(AuditRequestDto auditRequestDto)
         {
-            return await _context.Audits.ToListAsync();
+            var auditRecords = await _context.AuditDetailDto
+                .FromSqlInterpolated($@"EXEC dbo.GetAuditDetails 
+                                @StatusId = {auditRequestDto.StatusId}, 
+                                @SearchText = {auditRequestDto.SearchText},                                                                                    
+                                @PageNumber = {auditRequestDto.PageNumber}, 
+                                @PageSize = {auditRequestDto.PageSize}")
+                .AsNoTracking()
+                .ToListAsync();
+
+            var totalCount = auditRecords.FirstOrDefault()?.TotalCount ?? 0;
+
+            return new PagedAuditDetailDto
+            {
+                Records = auditRecords.ToArray(),
+                PageNumber = auditRequestDto.PageNumber,
+                PageSize = auditRequestDto.PageSize,
+                TotalCount = totalCount
+            };
         }
 
         public async Task<Audit?> GetByIdAsync(Guid id)
@@ -42,5 +61,7 @@ namespace Persistence.Repositories.Pharma_RM
         {
             _context.Audits.Remove(audit);
         }
+
+       
     }
 }

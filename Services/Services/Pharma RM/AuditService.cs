@@ -20,10 +20,10 @@ namespace Services.Services.Pharma_RM
             _repository = repository;
         }
 
-        public async Task<IEnumerable<AuditDto>> GetAllAsync()
+        public async Task<PagedAuditDetailDto> GetAllAsync(AuditRequestDto auditRequestDto)
         {
-            var audits = await _repository.Audit.GetAllAsync();
-            return audits.Adapt<IEnumerable<AuditDto>>();
+            var audits = await _repository.Audit.GetAllAsync(auditRequestDto);
+            return audits.Adapt<PagedAuditDetailDto>();
         }
 
         public async Task<AuditDto?> GetByIdAsync(Guid id)

@@ -15,6 +15,8 @@ namespace Common.Models.Dtos.Pharma_RM
         public int? LeadAuditor { get; set; }
         public decimal? Score { get; set; }
         public int? StatusId { get; set; }
+        public string? Comment { get; set; }
+
     }
 
     public class AuditCreateDto
@@ -25,6 +27,7 @@ namespace Common.Models.Dtos.Pharma_RM
         public int? LeadAuditor { get; set; }
         public decimal? Score { get; set; }
         public int? StatusId { get; set; }
+        public string? Comment { get; set; }
     }
 
     public class AuditUpdateDto

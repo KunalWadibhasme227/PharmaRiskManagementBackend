@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Pharma_RM;
+﻿using Common.Models.Dtos.Pharma_RM;
+using Domain.Entities.Pharma_RM;
 using Domain.Entities.Shared;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,10 +18,12 @@ namespace Persistence
         public DbSet<MasterGlobalCodeType> MasterGlobalCodeType { get; set; }
         public DbSet<States> States { get; set; }
         public DbSet<Cities> Cities { get; set; }
+        public DbSet<AuditDetailDto> AuditDetailDto { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Global Question Bank
+            modelBuilder.Entity<AuditDetailDto>().HasNoKey();
 
 
 

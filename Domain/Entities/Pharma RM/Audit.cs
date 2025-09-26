@@ -38,6 +38,8 @@ namespace Domain.Entities.Pharma_RM
 
         [Column("StatusId")]
         public int? StatusId { get; set; }
+        [Column("comment")]
+        public string? Comment { get; set; }
 
         // Navigation Properties (optional, if you have Supplier / MasterGlobalCodes tables)
         // public Supplier Supplier { get; set; }

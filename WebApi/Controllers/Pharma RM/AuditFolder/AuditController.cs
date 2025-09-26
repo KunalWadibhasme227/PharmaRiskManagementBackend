@@ -16,10 +16,10 @@ namespace WebApi.Controllers.Pharma_RM.AuditFolder
             _service = service;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<AuditDto>>> GetAll()
+        [HttpPost("GetAudit")]
+        public async Task<ActionResult<PagedAuditDetailDto>> GetAll(AuditRequestDto auditRequestDto)
         {
-            return Ok(await _service.AuditService.GetAllAsync());
+            return Ok(await _service.AuditService.GetAllAsync(auditRequestDto));
         }
 
         [HttpGet("{id:guid}")]
@@ -45,7 +45,7 @@ namespace WebApi.Controllers.Pharma_RM.AuditFolder
             var success = await _service.AuditService.UpdateAsync(dto);
             if (!success) return NotFound();
 
-            return NoContent();
+            return Ok(success);
         }
 
         [HttpDelete("{id:guid}")]
