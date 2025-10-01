@@ -18,17 +18,11 @@ namespace Persistence
         public DbSet<MasterGlobalCodeType> MasterGlobalCodeType { get; set; }
         public DbSet<States> States { get; set; }
         public DbSet<Cities> Cities { get; set; }
-        public DbSet<AuditDetailDto> AuditDetailDto { get; set; }
         public DbSet<Finding> Findings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Global Question Bank
-            modelBuilder.Entity<AuditDetailDto>().HasNoKey();
-
-
-
-            // DbSet properties for your entities
         }
     }
 }
