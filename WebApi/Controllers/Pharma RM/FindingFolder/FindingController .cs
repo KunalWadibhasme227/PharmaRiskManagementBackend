@@ -51,5 +51,13 @@ namespace WebApi.Controllers.Pharma_RM.FindingFolder
             await _service.FindingService.DeleteAsync(id);
             return NoContent();
         }
+
+        [HttpGet("findingSummary")]
+        public async Task<IActionResult> GetFindingSummary()
+        {
+            var result = await _service.FindingService.GetSummaryCountsAsync();
+            return Ok(result);
+        }
+
     }
 }

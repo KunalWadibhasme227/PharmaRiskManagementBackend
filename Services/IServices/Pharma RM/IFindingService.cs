@@ -14,5 +14,6 @@ namespace Services.IServices.Pharma_RM
         Task<FindingDto> CreateAsync(FindingForCreateDto dto);
         Task UpdateAsync(FindingForUpdateDto dto);
         Task DeleteAsync(Guid id);
+        Task<FindingsSummaryDto> GetSummaryCountsAsync();
     }
 }
