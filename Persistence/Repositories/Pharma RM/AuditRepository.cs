@@ -22,23 +22,23 @@ namespace Persistence.Repositories.Pharma_RM
 
         public async Task<PagedAuditDetailDto> GetAllAsync(AuditRequestDto auditRequestDto)
         {
-            var auditRecords = await _context.AuditDetailDto
-                .FromSqlInterpolated($@"EXEC dbo.GetAuditDetails 
-                                @StatusId = {auditRequestDto.StatusId}, 
-                                @SearchText = {auditRequestDto.SearchText},                                                                                    
-                                @PageNumber = {auditRequestDto.PageNumber}, 
-                                @PageSize = {auditRequestDto.PageSize}")
-                .AsNoTracking()
-                .ToListAsync();
+            //var auditRecords = await _context.Audits
+            //    .FromSqlInterpolated($@"EXEC dbo.GetAuditDetails 
+            //                    @StatusId = {auditRequestDto.StatusId}, 
+            //                    @SearchText = {auditRequestDto.SearchText},                                                                                    
+            //                    @PageNumber = {auditRequestDto.PageNumber}, 
+            //                    @PageSize = {auditRequestDto.PageSize}")
+            //    .AsNoTracking()
+            //    .ToListAsync();
 
-            var totalCount = auditRecords.FirstOrDefault()?.TotalCount ?? 0;
+            //var totalCount = auditRecords.FirstOrDefault()?.TotalCount ?? 0;
 
             return new PagedAuditDetailDto
             {
-                Records = auditRecords.ToArray(),
+                Records = null,
                 PageNumber = auditRequestDto.PageNumber,
                 PageSize = auditRequestDto.PageSize,
-                TotalCount = totalCount
+                TotalCount = 10
             };
         }
 

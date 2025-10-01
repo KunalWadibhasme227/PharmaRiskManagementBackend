@@ -19,6 +19,7 @@ namespace Persistence
         public DbSet<States> States { get; set; }
         public DbSet<Cities> Cities { get; set; }
         public DbSet<AuditDetailDto> AuditDetailDto { get; set; }
+        public DbSet<Finding> Findings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
