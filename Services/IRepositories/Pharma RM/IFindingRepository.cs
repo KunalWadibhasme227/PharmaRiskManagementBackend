@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Pharma_RM;
+﻿using Common.Models.Dtos.Pharma_RM.FindingFolder;
+using Domain.Entities.Pharma_RM;
 
 namespace Services.IRepositories.Pharma_RM
 {
@@ -9,5 +10,6 @@ namespace Services.IRepositories.Pharma_RM
         Task<Finding> CreateAsync(Finding entity);
         Task UpdateAsync(Finding entity);
         Task DeleteAsync(Finding entity);
+        Task<FindingsSummaryDto> GetSummaryCountsAsync();
     }
 }
