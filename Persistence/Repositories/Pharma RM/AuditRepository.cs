@@ -68,7 +68,7 @@ namespace Persistence.Repositories.Pharma_RM
                 Records = recordsList.ToArray(),
                 PageNumber = auditRequestDto.PageNumber,
                 PageSize = auditRequestDto.PageSize,
-                TotalCount = totalCount
+                TotalCount = 10
             };
         }
 
