@@ -11,5 +11,6 @@ namespace Services.IServices
         IAuditorService AuditorService { get; }
         ICommonService CommonService { get; }
         IAuditService AuditService { get; }
+        ICategoryService CategoryService { get; }
     }
 }

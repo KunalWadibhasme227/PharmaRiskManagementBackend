@@ -15,6 +15,7 @@ namespace Services.IRepositories
         IMasterGlobalCodeTypeRepository MasterGlobalCodeType { get; }
         ICommonApiRepository CommonApiRepository { get; }
         IAuditRepository Audit { get; }
+        ICategoryRepository Category { get; }
 
         Task SaveAsync();
     }

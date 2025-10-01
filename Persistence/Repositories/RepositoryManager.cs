@@ -16,11 +16,13 @@ namespace Persistence.Repositories
         private readonly Lazy<IMasterGlobalCodeRepository> _lazyIMasterGlobalCodeRepository;
         private readonly Lazy<ICommonApiRepository> _lazyCommonApiRepository;
         private readonly Lazy<IAuditRepository> _auditRepo;
+        private readonly Lazy<ICategoryRepository> _categoryRepo;
 
         public RepositoryManager(ApplicationDbContext context)
         {
             _context = context;
             _auditTypeRepo = new Lazy<IAuditTypeRepository>(() => new AuditTypeRepository(context));
+            _categoryRepo = new Lazy<ICategoryRepository>(() => new CategoryRepository(context));
             _auditorRepo = new Lazy<IAuditorRepository>(() => new AuditorRepository(context));
              _lazyIMasterGlobalCodeTypeRepository = new Lazy<IMasterGlobalCodeTypeRepository>(() => new MasterGlobalCodeTypeRepository(context));
             _lazyIMasterGlobalCodeRepository = new Lazy<IMasterGlobalCodeRepository>(()=>  new MasterGlobalCodeRepository(context));
@@ -39,6 +41,7 @@ namespace Persistence.Repositories
         public ICommonApiRepository CommonApiRepository => _lazyCommonApiRepository.Value;
 
         public IAuditRepository Audit => _auditRepo.Value;
+        public ICategoryRepository Category => _categoryRepo.Value;
         public async Task SaveAsync() => await _context.SaveChangesAsync();
     }
 
