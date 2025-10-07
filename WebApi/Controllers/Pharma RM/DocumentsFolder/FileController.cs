@@ -26,10 +26,10 @@ namespace WebApi.Controllers.Pharma_RM.DocumentsFolder
         {
             try
             {
-                // Delegate the core logic (validation, I/O) to the service layer
+                
                 var response = await _fileUploadService.UploadFileAsync(file, documentType);
 
-                // The service handles the null/empty check and throws an ArgumentException, which we catch.
+                
                 return Ok(response);
             }
             catch (ArgumentException ex)
@@ -38,7 +38,7 @@ namespace WebApi.Controllers.Pharma_RM.DocumentsFolder
             }
             catch (Exception ex)
             {
-                // Log the exception (e.g., using a logger)
+               
                 return StatusCode(500, $"Internal server error during file upload: {ex.Message}");
             }
         }
