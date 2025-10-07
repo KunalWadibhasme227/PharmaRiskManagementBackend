@@ -85,5 +85,26 @@ namespace Persistence.Repositories.Pharma_RM
             _context.Findings.Remove(entity);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<FindingsSummaryDto> GetSummaryCountsAsync()
+        {
+            var now = DateTime.UtcNow;
+
+            var total = await _context.Findings.CountAsync();
+            var open = await _context.Findings.CountAsync(f => f.StatusId == 1 || f.StatusId == 2);
+            var overdue = await _context.Findings.CountAsync(f => (f.StatusId == 1 || f.StatusId == 2) && f.DueDate < now);
+            var closed = await _context.Findings.CountAsync(f => f.StatusId == 3);
+
+            return new FindingsSummaryDto
+            {
+                TotalFindings = total,
+                OpenFindings = open,
+                OverdueFindings = overdue,
+                ClosedFindings = closed
+            };
+        }
+
     }
+
+
 }

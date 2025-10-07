@@ -57,5 +57,10 @@ namespace Services.Services.Pharma_RM
             if (entity != null)
                 await _repository.Finding.DeleteAsync(entity);
         }
+        public async Task<FindingsSummaryDto> GetSummaryCountsAsync()
+        {
+            return await _repository.Finding.GetSummaryCountsAsync();
+        }
+
     }
 }

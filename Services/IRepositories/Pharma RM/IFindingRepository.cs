@@ -11,5 +11,6 @@ namespace Services.IRepositories.Pharma_RM
         Task<Finding> CreateAsync(Finding entity);
         Task UpdateAsync(Finding entity);
         Task DeleteAsync(Finding entity);
+        Task<FindingsSummaryDto> GetSummaryCountsAsync();
     }
 }
