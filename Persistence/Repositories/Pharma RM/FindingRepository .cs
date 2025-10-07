@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Pharma_RM;
+﻿using Common.Models.Dtos.Pharma_RM.FindingFolder;
+using Domain.Entities.Pharma_RM;
 using Microsoft.EntityFrameworkCore;
 using Services.IRepositories.Pharma_RM;
 using System;
@@ -47,6 +48,24 @@ namespace Persistence.Repositories.Pharma_RM
 
         public async Task<Finding?> GetByIdAsync(Guid id) =>
             await _context.Findings.FirstOrDefaultAsync(f => f.FindingId == id);
+
+        public async Task<GetFindingDto?> GetByFindingIdAsync(Guid id) =>
+           await _context.Findings.Where(f => f.FindingId == id)
+                                    .Select(f => new GetFindingDto
+                                    {
+                                        FindingId = f.FindingId,
+                                        Description = f.Description,
+                                        DueDate = f.DueDate,
+                                        Title = f.Title,
+                                        StatusId = f.StatusId,
+                                        ProgressPercent = f.ProgressPercent,
+                                        AssigneeId = f.AssigneeId,
+                                        CategoryId = f.CategoryId,
+                                        TagId = f.TagId,
+                                        AuditId = f.AuditId,
+                                        SupplierId = f.Audit.SupplierId 
+                                    })
+                                    .FirstOrDefaultAsync();
 
         public async Task<Finding> CreateAsync(Finding entity)
         {

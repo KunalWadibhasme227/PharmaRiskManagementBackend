@@ -9,6 +9,7 @@ namespace Common.Models.Dtos.Pharma_RM
     public class AuditDetailDto
     {
     public Guid AuditId { get; set; }
+    public string AuditTitle { get; set; }
     public int SupplierId { get; set; }
     public string AuditorName { get; set; } = string.Empty;
     public string AuditTypeName { get; set; } = string.Empty;
@@ -16,7 +17,7 @@ namespace Common.Models.Dtos.Pharma_RM
     public int StatusId { get; set; }
     public DateTime AuditDate { get; set; }
     public string Comment { get; set; } = string.Empty;
-    public int TotalCount { get; set; }  // 👈 new
+    public int TotalCount { get; set; }  
 
     }
 
