@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -11,9 +12,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251001085810_AddFindingMigration")]
+    partial class AddFindingMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,11 +35,6 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("AuditDate")
                         .HasColumnType("datetime2")
                         .HasColumnName("AuditDate");
-
-                    b.Property<string>("AuditTitle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("AuditTitle");
 
                     b.Property<int>("AuditType")
                         .HasColumnType("int")
@@ -160,8 +158,6 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.HasKey("FindingId");
-
-                    b.HasIndex("AuditId");
 
                     b.ToTable("Finding");
                 });
@@ -349,17 +345,6 @@ namespace Persistence.Migrations
                     b.ToTable("States");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Pharma_RM.Finding", b =>
-                {
-                    b.HasOne("Domain.Entities.Pharma_RM.Audit", "Audit")
-                        .WithMany("Finding")
-                        .HasForeignKey("AuditId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Audit");
-                });
-
             modelBuilder.Entity("Domain.Entities.Shared.Cities", b =>
                 {
                     b.HasOne("Domain.Entities.Shared.States", "State")
@@ -380,11 +365,6 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("MasterGlobalCodeType");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Pharma_RM.Audit", b =>
-                {
-                    b.Navigation("Finding");
                 });
 
             modelBuilder.Entity("Domain.Entities.Shared.MasterGlobalCodeType", b =>
