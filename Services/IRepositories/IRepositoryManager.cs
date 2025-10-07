@@ -1,5 +1,6 @@
 ﻿
 using Services.IRepositories.Pharma_RM;
+using System.Reflection.Metadata;
 
 namespace Services.IRepositories
 {
@@ -16,6 +17,9 @@ namespace Services.IRepositories
         ICommonApiRepository CommonApiRepository { get; }
         IAuditRepository Audit { get; }
         IFindingRepository Finding { get; }
+        IDocumentRepository Document { get; }
+
+        IGlobalDocumentRepository GlobalDocument { get; }
         Task SaveAsync();
     }
 }
