@@ -7,6 +7,7 @@ namespace Services.IRepositories.Pharma_RM
     {
         Task<IEnumerable<Finding>> GetAllAsync(string? filter);
         Task<Finding?> GetByIdAsync(Guid id);
+        Task<GetFindingDto?> GetByFindingIdAsync(Guid id);
         Task<Finding> CreateAsync(Finding entity);
         Task UpdateAsync(Finding entity);
         Task DeleteAsync(Finding entity);

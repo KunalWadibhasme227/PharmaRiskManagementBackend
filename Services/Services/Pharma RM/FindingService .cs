@@ -32,6 +32,12 @@ namespace Services.Services.Pharma_RM
             return finding?.Adapt<FindingDto>();
         }
 
+        public async Task<GetFindingDto?> GetByFindingIdAsync(Guid id)
+        {
+            var finding = await _repository.Finding.GetByFindingIdAsync(id);
+            return finding?.Adapt<GetFindingDto>();
+        }
+
         public async Task<FindingDto> CreateAsync(FindingForCreateDto dto)
         {
             var entity = dto.Adapt<Finding>();

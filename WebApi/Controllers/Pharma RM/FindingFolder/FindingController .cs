@@ -22,10 +22,18 @@ namespace WebApi.Controllers.Pharma_RM.FindingFolder
             return Ok(result);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:Guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
             var result = await _service.FindingService.GetByIdAsync(id);
+            if (result == null) return NotFound();
+            return Ok(result);
+        }
+
+        [HttpGet("By/{findingId:Guid}")]
+        public async Task<IActionResult> GetByFindingId(Guid findingId)
+        {
+            var result = await _service.FindingService.GetByFindingIdAsync(findingId);
             if (result == null) return NotFound();
             return Ok(result);
         }
@@ -45,7 +53,7 @@ namespace WebApi.Controllers.Pharma_RM.FindingFolder
             return NoContent();
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             await _service.FindingService.DeleteAsync(id);

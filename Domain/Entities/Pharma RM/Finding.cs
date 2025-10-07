@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Entities.Shared;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -34,5 +35,8 @@ namespace Domain.Entities.Pharma_RM
         public int? AssigneeId { get; set; }
 
         public int? ProgressPercent { get; set; }
+
+        [ForeignKey(nameof(AuditId))]
+        public Audit Audit { get; set; } 
     }
 }
