@@ -16,5 +16,6 @@ namespace Services.IServices
         ICategoryService CategoryService { get; }
         IDocumentService FileService { get; }
         IDocumentService DocumentService { get; }
+        IUploadDocumentService UploadDocumentService { get; }
     }
 }

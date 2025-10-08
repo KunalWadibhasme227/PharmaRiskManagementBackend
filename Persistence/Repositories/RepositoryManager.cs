@@ -54,6 +54,8 @@ namespace Persistence.Repositories
         public IFindingRepository Finding => _findingRepo.Value;
         public IGlobalDocumentRepository GlobalDocument => _globalDocumentRepository.Value;
         public IDocumentRepository Document => _documentRepository.Value;
+
+        public IUploadDocumentRepository UploadDocument => _uploadDocumentrepository.Value; 
     }
 
 }

@@ -6,10 +6,7 @@ namespace Services.IRepositories
 {
     public interface IRepositoryManager
     {
-        // Question Bank
-        //IMasterCategoryRepository MasterCategoryRepository { get; }
-
-
+        
         IAuditTypeRepository AuditType { get; }
         IAuditorRepository Auditor { get; }
         IMasterGlobalCodeRepository MasterGlobalCode { get; }
@@ -21,6 +18,7 @@ namespace Services.IRepositories
 
         IGlobalDocumentRepository GlobalDocument { get; }
         ICategoryRepository Category { get; }
+        IUploadDocumentRepository UploadDocument { get; }
 
         Task SaveAsync();
     }

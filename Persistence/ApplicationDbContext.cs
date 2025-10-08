@@ -24,7 +24,7 @@ namespace Persistence
         public DbSet<MasterGlobalDocuments> MasterGlobalDocuments { get; set; } = null!;
         public DbSet<DocumentWorkflow> DocumentWorkflows { get; set; } = null!;
         public DbSet<DocumentActionLog> DocumentActionLogs { get; set; } = null!;
-
+        public DbSet<UploadDocument> UploadDocuments { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,0 +1,585 @@
+# Angular 20 Documents Module
+
+This code bundle contains a ready-to-drop-in Angular 20 module for the "Documentation Management" UI. It uses Tailwind for styling (you can swap SCSS later). The module includes HTTPClient placeholders (points to `environment.apiUrl`) and implements search/filter logic.
+
+---
+
+# File: src/app/modules/documents/documents.module.ts
+```ts
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+
+import { DocumentsRoutingModule } from './documents-routing.module';
+
+import { DocumentationManagementComponent } from './components/documentation-management/documentation-management.component';
+import { DashboardSummaryComponent } from './components/dashboard-summary/dashboard-summary.component';
+import { RecentDocumentsComponent } from './components/recent-documents/recent-documents.component';
+import { DocumentWorkflowComponent } from './components/document-workflow/document-workflow.component';
+import { DocumentCategoryComponent } from './components/document-category/document-category.component';
+import { DocumentUploadComponent } from './components/document-upload/document-upload.component';
+
+@NgModule({
+  declarations: [
+    DocumentationManagementComponent,
+    DashboardSummaryComponent,
+    RecentDocumentsComponent,
+    DocumentWorkflowComponent,
+    DocumentCategoryComponent,
+    DocumentUploadComponent
+  ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    DocumentsRoutingModule,
+    RouterModule
+  ]
+})
+export class DocumentsModule {}
+```
+
+---
+# File: src/app/modules/documents/documents-routing.module.ts
+```ts
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { DocumentationManagementComponent } from './components/documentation-management/documentation-management.component';
+import { RecentDocumentsComponent } from './components/recent-documents/recent-documents.component';
+import { DocumentWorkflowComponent } from './components/document-workflow/document-workflow.component';
+import { DocumentCategoryComponent } from './components/document-category/document-category.component';
+import { DocumentUploadComponent } from './components/document-upload/document-upload.component';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: DocumentationManagementComponent,
+    children: [
+      { path: '', redirectTo: 'recent', pathMatch: 'full' },
+      { path: 'recent', component: RecentDocumentsComponent },
+      { path: 'categories', component: DocumentCategoryComponent },
+      { path: 'workflow', component: DocumentWorkflowComponent },
+      { path: 'upload', component: DocumentUploadComponent }
+    ]
+  }
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class DocumentsRoutingModule {}
+```
+
+---
+# File: src/environments/environment.ts (ensure apiUrl)
+```ts
+export const environment = {
+  production: false,
+  apiUrl: 'https://localhost:5001/api' // <-- set to your backend
+};
+```
+
+---
+# File: src/app/modules/documents/models/models.ts
+```ts
+export interface DocumentDto {
+  documentId: number;
+  title: string;
+  version?: string;
+  author?: string;
+  categoryId?: number;
+  categoryName?: string;
+  statusId?: number;
+  statusName?: string;
+  modifiedDate?: string;
+  reviewDueDate?: string;
+  fileName?: string;
+}
+
+export interface CategoryComplianceDto {
+  categoryId: number;
+  categoryName: string;
+  totalCount: number;
+  currentCount: number;
+  underReviewCount: number;
+  outdatedCount: number;
+  compliancePercent: number;
+}
+
+export interface DashboardSummary {
+  totalDocuments: number;
+  current: number;
+  underReview: number;
+  outdated: number;
+}
+
+export interface WorkflowStageDto {
+  stageId: number;
+  stageName: string;
+  docCount: number;
+  avgProcessingTimeDays?: number;
+}
+```
+
+---
+# File: src/app/modules/documents/services/document.service.ts
+```ts
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import { DocumentDto, CategoryComplianceDto, DashboardSummary, WorkflowStageDto } from '../models/models';
+
+@Injectable({ providedIn: 'root' })
+export class DocumentService {
+  private base = `${environment.apiUrl}/documents`;
+
+  constructor(private http: HttpClient) {}
+
+  // Dashboard summary
+  getDashboardSummary(): Observable<DashboardSummary> {
+    return this.http.get<DashboardSummary>(`${this.base}/dashboard/summary`);
+  }
+
+  // Category compliance list
+  getCategoryCompliance(): Observable<CategoryComplianceDto[]> {
+    return this.http.get<CategoryComplianceDto[]>(`${this.base}/categories/compliance`);
+  }
+
+  // Recent documents with server-side paging / filters
+  getRecentDocuments(page = 1, pageSize = 10, search?: string, categoryId?: number, statusId?: number) {
+    let params = new HttpParams().set('page', page.toString()).set('pageSize', pageSize.toString());
+    if (search) params = params.set('search', search);
+    if (categoryId) params = params.set('categoryId', categoryId.toString());
+    if (statusId) params = params.set('statusId', statusId.toString());
+    return this.http.get<{ items: DocumentDto[]; total: number }>(`${this.base}/recent`, { params });
+  }
+
+  // Get single document
+  getDocument(documentId: number) {
+    return this.http.get<DocumentDto>(`${this.base}/${documentId}`);
+  }
+
+  // Create (upload) document - expects FormData with file
+  uploadDocument(formData: FormData) {
+    return this.http.post<{ documentId: number }>(`${this.base}/upload`, formData);
+  }
+
+  // Update document metadata
+  updateDocument(documentId: number, payload: Partial<DocumentDto>) {
+    return this.http.put(`${this.base}/${documentId}`, payload);
+  }
+
+  // Update status / workflow action
+  updateStatus(documentId: number, statusId: number, comments?: string) {
+    return this.http.post(`${this.base}/${documentId}/status`, { statusId, comments });
+  }
+
+  // Workflow stages summary
+  getWorkflowStages(): Observable<WorkflowStageDto[]> {
+    return this.http.get<WorkflowStageDto[]>(`${this.base}/workflow/stages`);
+  }
+
+  // Bulk actions
+  bulkReview(documentIds: number[]) {
+    return this.http.post(`${this.base}/workflow/bulk-review`, { documentIds });
+  }
+}
+```
+
+---
+# File: src/app/modules/documents/components/documentation-management/documentation-management.component.ts
+```ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-documentation-management',
+  templateUrl: './documentation-management.component.html'
+})
+export class DocumentationManagementComponent {}
+```
+
+# File: src/app/modules/documents/components/documentation-management/documentation-management.component.html
+```html
+<div class="p-6">
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h1 class="text-2xl font-semibold">Documentation Management</h1>
+      <p class="text-sm text-gray-500">Manage and track regulatory documentation and compliance</p>
+    </div>
+
+    <div class="flex gap-3">
+      <button class="px-4 py-2 border rounded">Upload</button>
+      <a routerLink="upload" class="px-4 py-2 bg-black text-white rounded">+ New Document</a>
+    </div>
+  </div>
+
+  <app-dashboard-summary></app-dashboard-summary>
+
+  <div class="mt-6">
+    <nav class="flex gap-4 border-b mb-4">
+      <a routerLink="recent" routerLinkActive="border-b-2 border-black pb-3">Recent Documents</a>
+      <a routerLink="categories" routerLinkActive="border-b-2 border-black pb-3">Document Categories</a>
+      <a routerLink="workflow" routerLinkActive="border-b-2 border-black pb-3">Document Workflow</a>
+    </nav>
+
+    <router-outlet></router-outlet>
+  </div>
+</div>
+```
+
+---
+# File: src/app/modules/documents/components/dashboard-summary/dashboard-summary.component.ts
+```ts
+import { Component, OnInit } from '@angular/core';
+import { DocumentService } from '../../services/document.service';
+import { DashboardSummary } from '../../models/models';
+
+@Component({
+  selector: 'app-dashboard-summary',
+  templateUrl: './dashboard-summary.component.html'
+})
+export class DashboardSummaryComponent implements OnInit {
+  summary: DashboardSummary = { totalDocuments: 0, current: 0, underReview: 0, outdated: 0 };
+  loading = false;
+
+  constructor(private svc: DocumentService) {}
+
+  ngOnInit(): void {
+    this.load();
+  }
+
+  load() {
+    this.loading = true;
+    this.svc.getDashboardSummary().subscribe({
+      next: (s) => { this.summary = s; this.loading = false; },
+      error: () => { this.loading = false; }
+    });
+  }
+}
+```
+
+# File: src/app/modules/documents/components/dashboard-summary/dashboard-summary.component.html
+```html
+<div class="grid grid-cols-4 gap-4">
+  <div class="p-4 bg-white rounded-2xl shadow">
+    <div class="text-sm text-gray-500">Total Documents</div>
+    <div class="text-2xl font-bold">{{ summary.totalDocuments }}</div>
+    <div class="text-xs text-gray-400">Across all categories</div>
+  </div>
+
+  <div class="p-4 bg-white rounded-2xl shadow">
+    <div class="text-sm text-gray-500">Current</div>
+    <div class="text-2xl font-bold text-green-600">{{ summary.current }}</div>
+    <div class="text-xs text-gray-400">Up to date documents</div>
+  </div>
+
+  <div class="p-4 bg-white rounded-2xl shadow">
+    <div class="text-sm text-gray-500">Under Review</div>
+    <div class="text-2xl font-bold">{{ summary.underReview }}</div>
+    <div class="text-xs text-gray-400">Pending approval</div>
+  </div>
+
+  <div class="p-4 bg-white rounded-2xl shadow">
+    <div class="text-sm text-gray-500">Outdated</div>
+    <div class="text-2xl font-bold text-red-600">{{ summary.outdated }}</div>
+    <div class="text-xs text-gray-400">Require updates</div>
+  </div>
+</div>
+```
+
+---
+# File: src/app/modules/documents/components/recent-documents/recent-documents.component.ts
+```ts
+import { Component, OnInit } from '@angular/core';
+import { DocumentService } from '../../services/document.service';
+import { DocumentDto } from '../../models/models';
+import { FormControl } from '@angular/forms';
+import { debounceTime } from 'rxjs/operators';
+
+@Component({
+  selector: 'app-recent-documents',
+  templateUrl: './recent-documents.component.html'
+})
+export class RecentDocumentsComponent implements OnInit {
+  documents: DocumentDto[] = [];
+  total = 0;
+  page = 1;
+  pageSize = 5; // as requested
+  search = new FormControl('');
+  selectedCategory?: number;
+  selectedStatus?: number;
+  loading = false;
+
+  constructor(private svc: DocumentService) {}
+
+  ngOnInit(): void {
+    this.load();
+
+    this.search.valueChanges.pipe(debounceTime(400)).subscribe(() => {
+      this.page = 1;
+      this.load();
+    });
+  }
+
+  load() {
+    this.loading = true;
+    this.svc.getRecentDocuments(this.page, this.pageSize, this.search.value, this.selectedCategory, this.selectedStatus)
+      .subscribe({
+        next: (res) => { this.documents = res.items; this.total = res.total; this.loading = false; },
+        error: () => { this.loading = false; }
+      });
+  }
+
+  onPageChange(newPage: number) {
+    this.page = newPage;
+    this.load();
+  }
+
+  clearFilters() {
+    this.selectedCategory = undefined;
+    this.selectedStatus = undefined;
+    this.search.setValue('');
+    this.load();
+  }
+
+  download(doc: DocumentDto) {
+    // open download endpoint
+    window.open(`${(location.origin)}${'/api/documents/' + doc.documentId + '/download'}`);
+  }
+
+  review(doc: DocumentDto) {
+    // navigate to review screen or open modal (not included)
+  }
+}
+```
+
+# File: src/app/modules/documents/components/recent-documents/recent-documents.component.html
+```html
+<div class="bg-white p-4 rounded-2xl shadow">
+  <div class="flex gap-3 items-center mb-4">
+    <input type="text" [formControl]="search" placeholder="Search documents..." class="flex-1 p-2 border rounded" />
+
+    <select [(ngModel)]="selectedCategory" (change)="load()" class="p-2 border rounded">
+      <option [ngValue]="undefined">All Categories</option>
+      <!-- populate categories from API if needed -->
+    </select>
+
+    <select [(ngModel)]="selectedStatus" (change)="load()" class="p-2 border rounded">
+      <option [ngValue]="undefined">All Status</option>
+      <option [value]="1">Approved</option>
+      <option [value]="2">Under Review</option>
+      <option [value]="3">Draft</option>
+    </select>
+
+    <button (click)="clearFilters()" class="px-3 py-2 border rounded">Clear</button>
+  </div>
+
+  <div *ngIf="loading" class="py-6 text-center">Loading...</div>
+
+  <div *ngFor="let doc of documents" class="border rounded p-4 mb-3 flex justify-between items-center">
+    <div>
+      <div class="font-semibold text-lg">{{ doc.title }}</div>
+      <div class="text-sm text-gray-500">{{ doc.categoryName }} • v{{ doc.version }} • By {{ doc.author }}</div>
+      <div class="text-xs text-gray-400 mt-2">Modified: {{ doc.modifiedDate | date:'mediumDate' }} • Review due: {{ doc.reviewDueDate | date:'mediumDate' }}</div>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <span [ngClass]="{
+        'bg-green-100 text-green-700 px-3 py-1 rounded-full': doc.statusName === 'Approved',
+        'bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full': doc.statusName === 'Under Review',
+        'bg-blue-100 text-blue-700 px-3 py-1 rounded-full': doc.statusName === 'Draft'
+      }">{{ doc.statusName }}</span>
+
+      <button (click)="download(doc)" class="px-3 py-1 border rounded">Download</button>
+      <button class="px-3 py-1 border rounded">Edit</button>
+      <button (click)="review(doc)" class="px-3 py-1 bg-black text-white rounded">Review</button>
+    </div>
+  </div>
+
+  <div class="flex justify-between items-center pt-4">
+    <div class="text-sm text-gray-500">Showing {{ documents.length }} of {{ total }}</div>
+    <div class="flex gap-2">
+      <button (click)="onPageChange(page-1)" [disabled]="page <= 1" class="px-3 py-1 border rounded">Prev</button>
+      <button (click)="onPageChange(page+1)" [disabled]="page*pageSize >= total" class="px-3 py-1 border rounded">Next</button>
+    </div>
+  </div>
+</div>
+```
+
+---
+# File: src/app/modules/documents/components/document-workflow/document-workflow.component.ts
+```ts
+import { Component, OnInit } from '@angular/core';
+import { DocumentService } from '../../services/document.service';
+import { WorkflowStageDto } from '../../models/models';
+
+@Component({
+  selector: 'app-document-workflow',
+  templateUrl: './document-workflow.component.html'
+})
+export class DocumentWorkflowComponent implements OnInit {
+  stages: WorkflowStageDto[] = [];
+  loading = false;
+
+  constructor(private svc: DocumentService) {}
+
+  ngOnInit(): void {
+    this.load();
+  }
+
+  load() {
+    this.loading = true;
+    this.svc.getWorkflowStages().subscribe({ next: (r) => { this.stages = r; this.loading = false; }, error: () => this.loading = false });
+  }
+
+  startBulkReview() {
+    // open modal to select items or call bulkReview
+  }
+}
+```
+
+# File: src/app/modules/documents/components/document-workflow/document-workflow.component.html
+```html
+<div class="grid grid-cols-2 gap-4">
+  <div>
+    <h3 class="text-xl font-semibold mb-4">Document Workflow</h3>
+    <div *ngFor="let s of stages" class="border rounded p-4 mb-3">
+      <div class="flex justify-between items-center">
+        <div class="font-medium">{{ s.stageName }}</div>
+        <div class="text-sm text-gray-500">{{ s.docCount }} docs</div>
+      </div>
+      <div class="text-xs text-gray-400">Average processing time: {{ s.avgProcessingTimeDays || 0 }} days</div>
+    </div>
+  </div>
+
+  <div>
+    <h3 class="text-xl font-semibold mb-4">Document Actions</h3>
+    <div class="space-y-3">
+      <button (click)="startBulkReview()" class="w-full p-3 bg-gray-100 rounded">Start Bulk Review</button>
+      <button class="w-full p-3 bg-green-100 rounded">Generate Report</button>
+      <button class="w-full p-3 bg-yellow-100 rounded">Archive Documents</button>
+      <button class="w-full p-3 bg-purple-100 rounded">Configure Reminders</button>
+    </div>
+  </div>
+</div>
+```
+
+---
+# File: src/app/modules/documents/components/document-category/document-category.component.ts
+```ts
+import { Component, OnInit } from '@angular/core';
+import { DocumentService } from '../../services/document.service';
+import { CategoryComplianceDto } from '../../models/models';
+
+@Component({
+  selector: 'app-document-category',
+  templateUrl: './document-category.component.html'
+})
+export class DocumentCategoryComponent implements OnInit {
+  categories: CategoryComplianceDto[] = [];
+  loading = false;
+
+  constructor(private svc: DocumentService) {}
+
+  ngOnInit(): void { this.load(); }
+
+  load() {
+    this.loading = true;
+    this.svc.getCategoryCompliance().subscribe({ next: (r) => { this.categories = r; this.loading = false; }, error: () => this.loading = false });
+  }
+}
+```
+
+# File: src/app/modules/documents/components/document-category/document-category.component.html
+```html
+<div class="space-y-4">
+  <div *ngFor="let c of categories" class="bg-white p-4 rounded-2xl shadow">
+    <div class="flex justify-between items-center mb-2">
+      <h3 class="font-semibold">{{ c.categoryName }}</h3>
+      <span class="text-sm font-bold">{{ c.compliancePercent }}%</span>
+    </div>
+    <div class="h-2 bg-gray-200 rounded overflow-hidden">
+      <div [style.width.%]="c.compliancePercent" class="h-2 bg-black"></div>
+    </div>
+    <div class="flex justify-between text-sm text-gray-500 mt-2">
+      <div>{{ c.currentCount }} Current</div>
+      <div>{{ c.underReviewCount }} Under Review</div>
+      <div>{{ c.outdatedCount }} Outdated</div>
+    </div>
+  </div>
+</div>
+```
+
+---
+# File: src/app/modules/documents/components/document-upload/document-upload.component.ts
+```ts
+import { Component } from '@angular/core';
+import { DocumentService } from '../../services/document.service';
+
+@Component({
+  selector: 'app-document-upload',
+  templateUrl: './document-upload.component.html'
+})
+export class DocumentUploadComponent {
+  file?: File;
+  title = '';
+  version = '';
+  categoryId?: number;
+
+  constructor(private svc: DocumentService) {}
+
+  onFileChange(event: any) {
+    const f = event.target.files?.[0];
+    if (f) this.file = f;
+  }
+
+  upload() {
+    if (!this.file) return alert('Select file');
+    const fd = new FormData();
+    fd.append('file', this.file);
+    fd.append('title', this.title);
+    fd.append('version', this.version);
+    if (this.categoryId) fd.append('categoryId', this.categoryId.toString());
+
+    this.svc.uploadDocument(fd).subscribe({ next: (r) => { alert('Uploaded'); }, error: () => alert('Upload failed') });
+  }
+}
+```
+
+# File: src/app/modules/documents/components/document-upload/document-upload.component.html
+```html
+<div class="bg-white p-6 rounded-2xl shadow max-w-xl">
+  <h3 class="text-lg font-semibold mb-4">Upload Document</h3>
+  <div class="space-y-3">
+    <input type="text" [(ngModel)]="title" placeholder="Title" class="w-full p-2 border rounded" />
+    <input type="text" [(ngModel)]="version" placeholder="Version" class="w-full p-2 border rounded" />
+    <select [(ngModel)]="categoryId" class="w-full p-2 border rounded">
+      <option [ngValue]="undefined">Select Category</option>
+      <!-- categories should be loaded via service if needed -->
+    </select>
+    <input type="file" (change)="onFileChange($event)" />
+    <div class="flex gap-3">
+      <button (click)="upload()" class="px-4 py-2 bg-black text-white rounded">Upload</button>
+      <button class="px-4 py-2 border rounded">Cancel</button>
+    </div>
+  </div>
+</div>
+```
+
+---
+
+# Instructions
+1. Copy the `src/app/modules/documents` folder into your Angular project.
+2. Register `DocumentsModule` inside your `AppRoutingModule` with lazy loading if desired:
+```ts
+{ path: 'documents', loadChildren: () => import('./modules/documents/documents.module').then(m => m.DocumentsModule) }
+```
+3. Ensure `HttpClientModule` is imported in `AppModule` and `environment.apiUrl` points to your backend.
+4. Install Tailwind or adapt SCSS to your styles. The components use simple utility classes.
+
+---
+
+Good luck — the module is ready. If you want, I can also generate the matching ASP.NET Core endpoints (controllers + DTOs) that these HTTP placeholders expect.
