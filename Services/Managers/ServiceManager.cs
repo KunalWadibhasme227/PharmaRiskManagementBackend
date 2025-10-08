@@ -19,9 +19,13 @@ namespace Services.Managers
         private readonly Lazy<IFileUploadService> _fileUploadService;
 
         public ServiceManager(IRepositoryManager repository, IWebHostEnvironment hostingEnvironment)
+        private readonly Lazy<ICategoryService> _categoryService;
+        public ServiceManager(IRepositoryManager repository)
         {
             _auditTypeService = new Lazy<IAuditTypeService>(() =>
                 new AuditTypeService(repository));
+            _categoryService = new Lazy<ICategoryService>(() =>
+                new CategoryService(repository));
             _auditorService = new Lazy<IAuditorService>(() =>
                 new AuditorService(repository));
 
@@ -39,5 +43,6 @@ namespace Services.Managers
         public IDocumentService FileService => _fileService.Value;
         public IDocumentService DocumentService => _documentService.Value;
         public IFileUploadService FileUploadService => _fileUploadService.Value;
+        public ICategoryService CategoryService => _categoryService.Value;
     }
 }

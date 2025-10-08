@@ -20,6 +20,8 @@ namespace Services.IRepositories
         IDocumentRepository Document { get; }
 
         IGlobalDocumentRepository GlobalDocument { get; }
+        ICategoryRepository Category { get; }
+
         Task SaveAsync();
     }
 }

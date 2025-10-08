@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Entities.Shared;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -15,6 +16,10 @@ namespace Domain.Entities.Pharma_RM
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("AuditId")]
         public Guid AuditId { get; set; }
+
+        [Required]
+        [Column("AuditTitle")]
+        public string AuditTitle { get; set; }
 
         [Required]
         [Column("SupplierId")]
@@ -42,6 +47,8 @@ namespace Domain.Entities.Pharma_RM
         public string? Comment { get; set; }
 
         // Navigation Properties (optional, if you have Supplier / MasterGlobalCodes tables)
+        public ICollection<Finding> Finding { get; set; } = new List<Finding>();
+
         // public Supplier Supplier { get; set; }
         // public MasterGlobalCode Status { get; set; }
     }

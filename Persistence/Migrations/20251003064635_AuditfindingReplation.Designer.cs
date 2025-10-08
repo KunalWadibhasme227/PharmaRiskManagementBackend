@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -11,9 +12,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251003064635_AuditfindingReplation")]
+    partial class AuditfindingReplation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,11 +35,6 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("AuditDate")
                         .HasColumnType("datetime2")
                         .HasColumnName("AuditDate");
-
-                    b.Property<string>("AuditTitle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("AuditTitle");
 
                     b.Property<int>("AuditType")
                         .HasColumnType("int")
@@ -122,26 +120,6 @@ namespace Persistence.Migrations
                     b.HasKey("AuditorId");
 
                     b.ToTable("Auditor");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Pharma_RM.CategoryMaster", b =>
-                {
-                    b.Property<int>("CategoryId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("CategoryId");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
-
-                    b.Property<string>("CategoryName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("CategoryName");
-
-                    b.HasKey("CategoryId");
-
-                    b.ToTable("CategoryMaster");
                 });
 
             modelBuilder.Entity("Domain.Entities.Pharma_RM.Finding", b =>
