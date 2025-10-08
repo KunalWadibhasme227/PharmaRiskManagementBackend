@@ -13,6 +13,7 @@ namespace Services.IServices
         ICommonService CommonService { get; }
         IAuditService AuditService { get; }
         IFindingService FindingService { get; }
+        ICategoryService CategoryService { get; }
         IDocumentService FileService { get; }
         IDocumentService DocumentService { get; }
     }

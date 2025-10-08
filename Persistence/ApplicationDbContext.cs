@@ -14,6 +14,7 @@ namespace Persistence
         public DbSet<Audit> Audits { get; set; }
         public DbSet<Auditor> Auditors { get; set; }
         public DbSet<AuditTypeMaster> AuditTypeMasters { get; set; }
+        public DbSet<CategoryMaster> CategoryMasters { get; set; }
         public DbSet<MasterGlobalCode> MasterGlobalCode { get; set; }
         public DbSet<MasterGlobalCodeType> MasterGlobalCodeType { get; set; }
         public DbSet<States> States { get; set; }
