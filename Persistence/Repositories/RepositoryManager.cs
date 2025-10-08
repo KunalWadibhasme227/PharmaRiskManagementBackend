@@ -17,6 +17,8 @@ namespace Persistence.Repositories
         private readonly Lazy<ICommonApiRepository> _lazyCommonApiRepository;
         private readonly Lazy<IAuditRepository> _auditRepo;
         private readonly Lazy<IFindingRepository> _findingRepo;
+        private readonly Lazy<IGlobalDocumentRepository> _globalDocumentRepository;
+        private readonly Lazy<IDocumentRepository> _documentRepository;
         private readonly Lazy<ICategoryRepository> _categoryRepo;
 
         public RepositoryManager(ApplicationDbContext context)
@@ -30,6 +32,8 @@ namespace Persistence.Repositories
             _lazyCommonApiRepository = new Lazy<ICommonApiRepository>(() => new CommonApiRepository(context));
             _auditRepo = new Lazy<IAuditRepository>(() => new AuditRepository(context));
             _findingRepo = new Lazy<IFindingRepository>(() => new FindingRepository(_context));
+            _globalDocumentRepository = new Lazy<IGlobalDocumentRepository>(() => new GlobalDocumentRepository(_context));
+            _documentRepository = new Lazy<IDocumentRepository>(() => new DocumentRepository(_context));
         }
 
         public IAuditTypeRepository AuditType => _auditTypeRepo.Value;
@@ -46,6 +50,8 @@ namespace Persistence.Repositories
         public ICategoryRepository Category => _categoryRepo.Value;
         public async Task SaveAsync() => await _context.SaveChangesAsync();
         public IFindingRepository Finding => _findingRepo.Value;
+        public IGlobalDocumentRepository GlobalDocument => _globalDocumentRepository.Value;
+        public IDocumentRepository Document => _documentRepository.Value;
     }
 
 }

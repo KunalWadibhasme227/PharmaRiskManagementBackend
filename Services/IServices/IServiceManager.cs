@@ -2,6 +2,7 @@
 
 using Services.IServices.Pharma_RM;
 using Services.IServices.Shared;
+using Services.Services.Pharma_RM;
 
 namespace Services.IServices
 {
@@ -13,5 +14,7 @@ namespace Services.IServices
         IAuditService AuditService { get; }
         IFindingService FindingService { get; }
         ICategoryService CategoryService { get; }
+        IDocumentService FileService { get; }
+        IDocumentService DocumentService { get; }
     }
 }
