@@ -21,6 +21,8 @@ namespace Persistence.Repositories
         private readonly Lazy<IDocumentRepository> _documentRepository;
         private readonly Lazy<ICategoryRepository> _categoryRepo;
 
+        private readonly Lazy<IMaterialRepository> _materialRepo;
+        private readonly Lazy<IHandlingProcedureRepository> _handlingProcedureRepo;
         public RepositoryManager(ApplicationDbContext context)
         {
             _context = context;
@@ -34,6 +36,8 @@ namespace Persistence.Repositories
             _findingRepo = new Lazy<IFindingRepository>(() => new FindingRepository(_context));
             _globalDocumentRepository = new Lazy<IGlobalDocumentRepository>(() => new GlobalDocumentRepository(_context));
             _documentRepository = new Lazy<IDocumentRepository>(() => new DocumentRepository(_context));
+            _materialRepo = new Lazy<IMaterialRepository>(() => new MaterialRepository(context));
+            _handlingProcedureRepo = new Lazy<IHandlingProcedureRepository>(() => new HandlingProcedureRepository(context));
         }
 
         public IAuditTypeRepository AuditType => _auditTypeRepo.Value;
@@ -52,6 +56,8 @@ namespace Persistence.Repositories
         public IFindingRepository Finding => _findingRepo.Value;
         public IGlobalDocumentRepository GlobalDocument => _globalDocumentRepository.Value;
         public IDocumentRepository Document => _documentRepository.Value;
+        public IMaterialRepository Material => _materialRepo.Value;
+        public IHandlingProcedureRepository HandlingProcedure => _handlingProcedureRepo.Value;
     }
 
 }

@@ -16,5 +16,7 @@ namespace Services.IServices
         ICategoryService CategoryService { get; }
         IDocumentService FileService { get; }
         IDocumentService DocumentService { get; }
+        IMaterialService MaterialService { get; }
+        IHandlingProcedure HandlingProcedure { get; }
     }
 }
