@@ -16,12 +16,10 @@ namespace Domain.Entities.Pharma_RM
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ActionLogId { get; set; }
 
-        // FK to Document (Nullable for bulk/system actions)
         [ForeignKey(nameof(Document))]
         public int? DocumentId { get; set; }
         public Document? Document { get; set; }
 
-        // FK to MasterGlobalCodes (Action Type)
         [ForeignKey(nameof(ActionType))]
         public int ActionTypeCodeId { get; set; }
         public MasterGlobalCode? ActionType { get; set; }

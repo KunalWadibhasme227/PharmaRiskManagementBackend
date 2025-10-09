@@ -73,10 +73,10 @@ builder.Services.AddCors(options =>
 
 #endregion
 
-builder.Services.AddScoped<IFileUploadService, FileService>();
+//builder.Services.AddScoped<IFileUploadService, FileService>();
 
-builder.Services.AddScoped<IServiceManager, ServiceManager>();
-builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
+//builder.Services.AddScoped<IServiceManager, ServiceManager>();
+//builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddControllers();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<AuditTypeForCreationDtoValidator>();

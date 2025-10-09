@@ -17,6 +17,7 @@ namespace Services.Managers
         private readonly Lazy<IDocumentService> _fileService;
         private readonly Lazy<IDocumentService> _documentService;
         private readonly Lazy<IFileUploadService> _fileUploadService;
+        private readonly Lazy<IUploadDocumentService> _uploadDocumentService;
         private readonly Lazy<ICategoryService> _categoryService;
         private readonly Lazy<IMaterialService> _materialService;
         private readonly Lazy<IHandlingProcedure> _handlingProcedureService;
@@ -33,6 +34,8 @@ namespace Services.Managers
             _commonService = new Lazy<ICommonService>(() => new CommonService(repository));
             _findingService = new Lazy<IFindingService>(() => new FindingService(repository));
             _fileUploadService = new Lazy<IFileUploadService>(() => new FileService(hostingEnvironment));
+            _uploadDocumentService = new Lazy<IUploadDocumentService>(() =>
+               new UploadDocumentService(repository,_fileUploadService.Value));
             _materialService = new Lazy<IMaterialService>(() => new MaterialService(repository));
             _handlingProcedureService = new Lazy<IHandlingProcedure>(() =>    new HandlingProcedureService(repository));
 
@@ -47,6 +50,8 @@ namespace Services.Managers
         public IDocumentService DocumentService => _documentService.Value;
         public IFileUploadService FileUploadService => _fileUploadService.Value;
         public ICategoryService CategoryService => _categoryService.Value;
+
+        public IUploadDocumentService UploadDocumentService => _uploadDocumentService.Value;
         public IMaterialService MaterialService => _materialService.Value;
         public IHandlingProcedure HandlingProcedure => _handlingProcedureService.Value;
     }

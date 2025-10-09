@@ -19,6 +19,7 @@ namespace Persistence.Repositories
         private readonly Lazy<IFindingRepository> _findingRepo;
         private readonly Lazy<IGlobalDocumentRepository> _globalDocumentRepository;
         private readonly Lazy<IDocumentRepository> _documentRepository;
+        private readonly Lazy<IUploadDocumentRepository> _uploadDocumentrepository;
         private readonly Lazy<ICategoryRepository> _categoryRepo;
 
         private readonly Lazy<IMaterialRepository> _materialRepo;
@@ -36,6 +37,7 @@ namespace Persistence.Repositories
             _findingRepo = new Lazy<IFindingRepository>(() => new FindingRepository(_context));
             _globalDocumentRepository = new Lazy<IGlobalDocumentRepository>(() => new GlobalDocumentRepository(_context));
             _documentRepository = new Lazy<IDocumentRepository>(() => new DocumentRepository(_context));
+            _uploadDocumentrepository = new Lazy<IUploadDocumentRepository>(() => new UploadDocumentRepository(_context));
             _materialRepo = new Lazy<IMaterialRepository>(() => new MaterialRepository(context));
             _handlingProcedureRepo = new Lazy<IHandlingProcedureRepository>(() => new HandlingProcedureRepository(context));
         }
@@ -56,6 +58,8 @@ namespace Persistence.Repositories
         public IFindingRepository Finding => _findingRepo.Value;
         public IGlobalDocumentRepository GlobalDocument => _globalDocumentRepository.Value;
         public IDocumentRepository Document => _documentRepository.Value;
+
+        public IUploadDocumentRepository UploadDocument => _uploadDocumentrepository.Value; 
         public IMaterialRepository Material => _materialRepo.Value;
         public IHandlingProcedureRepository HandlingProcedure => _handlingProcedureRepo.Value;
     }

@@ -26,10 +26,8 @@ namespace Persistence.Repositories.Pharma_RM
         public async Task<int> CreateDocumentAsync(Document document)
         {
             _context.Documents.Add(document);
-            // Workflow and ActionLog initial entries can be added here or in the Service/Transaction logic.
-            // _context.DocumentWorkflows.Add(initialWorkflow);
-            // _context.DocumentActionLogs.Add(uploadLog);
-            await _context.SaveChangesAsync(); // Note: Save is called here or in RepositoryManager.SaveAsync()
+
+            await _context.SaveChangesAsync(); 
 
             return document.DocumentId;
         }
@@ -42,9 +40,8 @@ namespace Persistence.Repositories.Pharma_RM
 
         public Task<object> GetDashboardDataFromDbAsync()
         {
-            // Dapper usage or EF Core FromSqlRaw to execute sp_GetDashboardData
-            // Example: var data = await _context.Database.ExecuteSqlRawAsync("EXEC sp_GetDashboardData");
-            return Task.FromResult<object>(new { Total = 100, Review = 5 }); // Placeholder
+            
+            return Task.FromResult<object>(new { Total = 100, Review = 5 }); 
         }
     }
 }
