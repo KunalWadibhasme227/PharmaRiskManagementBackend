@@ -20,6 +20,8 @@ namespace Services.IRepositories
         ICategoryRepository Category { get; }
         IUploadDocumentRepository UploadDocument { get; }
 
+        IMaterialRepository Material { get; }
+        IHandlingProcedureRepository HandlingProcedure { get; }
         Task SaveAsync();
     }
 }

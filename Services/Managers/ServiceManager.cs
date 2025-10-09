@@ -18,8 +18,9 @@ namespace Services.Managers
         private readonly Lazy<IDocumentService> _documentService;
         private readonly Lazy<IFileUploadService> _fileUploadService;
         private readonly Lazy<IUploadDocumentService> _uploadDocumentService;
-
         private readonly Lazy<ICategoryService> _categoryService;
+        private readonly Lazy<IMaterialService> _materialService;
+        private readonly Lazy<IHandlingProcedure> _handlingProcedureService;
         public ServiceManager(IRepositoryManager repository, IWebHostEnvironment hostingEnvironment)
         {
             _auditTypeService = new Lazy<IAuditTypeService>(() =>
@@ -35,6 +36,9 @@ namespace Services.Managers
             _fileUploadService = new Lazy<IFileUploadService>(() => new FileService(hostingEnvironment));
             _uploadDocumentService = new Lazy<IUploadDocumentService>(() =>
                new UploadDocumentService(repository,_fileUploadService.Value));
+            _materialService = new Lazy<IMaterialService>(() => new MaterialService(repository));
+            _handlingProcedureService = new Lazy<IHandlingProcedure>(() =>    new HandlingProcedureService(repository));
+
         }
 
         public IAuditTypeService AuditTypeService => _auditTypeService.Value;
@@ -48,5 +52,7 @@ namespace Services.Managers
         public ICategoryService CategoryService => _categoryService.Value;
 
         public IUploadDocumentService UploadDocumentService => _uploadDocumentService.Value;
+        public IMaterialService MaterialService => _materialService.Value;
+        public IHandlingProcedure HandlingProcedure => _handlingProcedureService.Value;
     }
 }

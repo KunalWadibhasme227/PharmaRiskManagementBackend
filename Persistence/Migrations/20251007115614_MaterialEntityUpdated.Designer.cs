@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -11,9 +12,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251007115614_MaterialEntityUpdated")]
+    partial class MaterialEntityUpdated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,146 +127,6 @@ namespace Persistence.Migrations
                     b.ToTable("Auditor");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Pharma_RM.CategoryMaster", b =>
-                {
-                    b.Property<int>("CategoryId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("CategoryId");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
-
-                    b.Property<string>("CategoryName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("CategoryName");
-
-                    b.HasKey("CategoryId");
-
-                    b.ToTable("CategoryMaster");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Pharma_RM.Document", b =>
-                {
-                    b.Property<int>("DocumentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DocumentId"));
-
-                    b.Property<int>("CategoryDocumentsId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("ComplianceScore")
-                        .HasColumnType("decimal(5, 2)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DocumentTitle")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<string>("FilePath")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<bool>("IsLatestVersion")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ReviewDueDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("StatusCodeId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("VersionNumber")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("DocumentId");
-
-                    b.HasIndex("CategoryDocumentsId");
-
-                    b.HasIndex("StatusCodeId");
-
-                    b.ToTable("Document");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Pharma_RM.DocumentActionLog", b =>
-                {
-                    b.Property<int>("ActionLogId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ActionLogId"));
-
-                    b.Property<string>("ActionBy")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime>("ActionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ActionTypeCodeId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("DocumentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ActionLogId");
-
-                    b.HasIndex("ActionTypeCodeId");
-
-                    b.HasIndex("DocumentId");
-
-                    b.ToTable("DocumentActionLog");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Pharma_RM.DocumentWorkflow", b =>
-                {
-                    b.Property<int>("WorkflowId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WorkflowId"));
-
-                    b.Property<string>("AssignedTo")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<decimal?>("AvgProcessingTime")
-                        .HasColumnType("decimal(5, 2)");
-
-                    b.Property<int>("DocCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DocumentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StageCodeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("WorkflowId");
-
-                    b.HasIndex("DocumentId");
-
-                    b.HasIndex("StageCodeId");
-
-                    b.ToTable("DocumentWorkflow");
-                });
-
             modelBuilder.Entity("Domain.Entities.Pharma_RM.Finding", b =>
                 {
                     b.Property<Guid>("FindingId")
@@ -304,40 +167,6 @@ namespace Persistence.Migrations
                     b.HasIndex("AuditId");
 
                     b.ToTable("Finding");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Pharma_RM.MasterGlobalDocuments", b =>
-                {
-                    b.Property<int>("GlobalDocumentsId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GlobalDocumentsId"));
-
-                    b.Property<string>("DocumentsName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("DocumentsType")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("DocumentsValue")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.HasKey("GlobalDocumentsId");
-
-                    b.HasIndex("DocumentsType", "DocumentsValue")
-                        .IsUnique();
-
-                    b.ToTable("MasterGlobalDocuments");
                 });
 
             modelBuilder.Entity("Domain.Entities.Pharma_RM.Material.HandlingProcedure", b =>
@@ -701,59 +530,6 @@ namespace Persistence.Migrations
                     b.ToTable("States");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Pharma_RM.Document", b =>
-                {
-                    b.HasOne("Domain.Entities.Shared.MasterGlobalCode", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryDocumentsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Shared.MasterGlobalCode", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusCodeId");
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Status");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Pharma_RM.DocumentActionLog", b =>
-                {
-                    b.HasOne("Domain.Entities.Shared.MasterGlobalCode", "ActionType")
-                        .WithMany()
-                        .HasForeignKey("ActionTypeCodeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Pharma_RM.Document", "Document")
-                        .WithMany()
-                        .HasForeignKey("DocumentId");
-
-                    b.Navigation("ActionType");
-
-                    b.Navigation("Document");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Pharma_RM.DocumentWorkflow", b =>
-                {
-                    b.HasOne("Domain.Entities.Pharma_RM.Document", "Document")
-                        .WithMany("Workflows")
-                        .HasForeignKey("DocumentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Shared.MasterGlobalCode", "Stage")
-                        .WithMany()
-                        .HasForeignKey("StageCodeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Document");
-
-                    b.Navigation("Stage");
-                });
-
             modelBuilder.Entity("Domain.Entities.Pharma_RM.Finding", b =>
                 {
                     b.HasOne("Domain.Entities.Pharma_RM.Audit", "Audit")
@@ -801,11 +577,6 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Pharma_RM.Audit", b =>
                 {
                     b.Navigation("Finding");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Pharma_RM.Document", b =>
-                {
-                    b.Navigation("Workflows");
                 });
 
             modelBuilder.Entity("Domain.Entities.Pharma_RM.Material.Materials", b =>
