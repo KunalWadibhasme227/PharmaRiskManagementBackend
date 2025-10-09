@@ -22,6 +22,8 @@ namespace Services.IRepositories
         IGlobalDocumentRepository GlobalDocument { get; }
         ICategoryRepository Category { get; }
 
+        IMaterialRepository Material { get; }
+        IHandlingProcedureRepository HandlingProcedure { get; }
         Task SaveAsync();
     }
 }

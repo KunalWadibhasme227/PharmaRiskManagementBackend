@@ -1,5 +1,6 @@
 ﻿using Common.Models.Dtos.Pharma_RM;
 using Domain.Entities.Pharma_RM;
+using Domain.Entities.Pharma_RM.Material;
 using Domain.Entities.Shared;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +26,9 @@ namespace Persistence
         public DbSet<DocumentWorkflow> DocumentWorkflows { get; set; } = null!;
         public DbSet<DocumentActionLog> DocumentActionLogs { get; set; } = null!;
 
+        public DbSet<Materials> Materials { get; set; }
+        public DbSet<HandlingProcedure> HandlingProcedures { get; set; }
+        public DbSet<MaterialStorageCondition> MaterialStorageConditions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
