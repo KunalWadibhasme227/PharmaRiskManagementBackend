@@ -17,12 +17,10 @@ namespace Services.Managers
         private readonly Lazy<IDocumentService> _fileService;
         private readonly Lazy<IDocumentService> _documentService;
         private readonly Lazy<IFileUploadService> _fileUploadService;
-
-        public ServiceManager(IRepositoryManager repository, IWebHostEnvironment hostingEnvironment)
         private readonly Lazy<ICategoryService> _categoryService;
         private readonly Lazy<IMaterialService> _materialService;
         private readonly Lazy<IHandlingProcedure> _handlingProcedureService;
-        public ServiceManager(IRepositoryManager repository)
+        public ServiceManager(IRepositoryManager repository, IWebHostEnvironment hostingEnvironment)
         {
             _auditTypeService = new Lazy<IAuditTypeService>(() =>
                 new AuditTypeService(repository));
