@@ -41,13 +41,13 @@ namespace WebApi.Controllers.Pharma_RM.DocumentsFolder
             return CreatedAtAction(nameof(GetById), new { documentId = newDocument.DocumentId }, newDocument);
         }
 
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<UploadDocumentDto>>> GetAll()
+        [HttpPost("GetUploadDocuments")]
+        public async Task<ActionResult<PagedUploadDocumentDto>> GetAll(UploadDocumentRequestDto document)
         {
-            var documents = await _documentService.GetAllAsync();
-            return Ok(documents);
-        }
+            return Ok(await _documentService.GetAllAsync(document));
+            
+        }   
+
 
         [HttpGet("{documentId}")]
         public async Task<ActionResult<UploadDocumentDto>> GetById(int documentId)

@@ -20,6 +20,24 @@ namespace Common.Models.Dtos.Pharma_RM
         public string Status { get; set; } = null!;
         public string? FilePath { get; set; }
         public int? FileSizeKB { get; set; }
+
+        public int TotalCount { get; set; }
+    }
+
+    public class PagedUploadDocumentDto
+    {
+        public UploadDocumentDto[] Records { get; set; } = Array.Empty<UploadDocumentDto>();
+        public int TotalCount { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+    }
+
+    public class UploadDocumentRequestDto
+    {
+        public string? SearchText { get; set; }
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
+
     }
 
     public class UploadDocumentCreationDto

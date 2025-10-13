@@ -10,11 +10,11 @@ namespace Services.IServices.Pharma_RM
 {
     public interface IUploadDocumentService
     {
+        Task<PagedUploadDocumentDto> GetAllAsync(UploadDocumentRequestDto document);
         Task<UploadDocumentDto> CreateAsync(UploadDocumentCreationDto dto, IFormFile file);
         Task<UploadDocumentDto?> UpdateAsync(int documentId, UploadDocumentUpdateDto dto, IFormFile? file);
         Task<UploadDocumentDto?> GetByIdAsync(int documentId);
         Task<FileDownloadDto?> DownloadAsync(int documentId);
-        Task<IEnumerable<UploadDocumentDto>> GetAllAsync();
         Task<UploadDocumentDto?> ViewDetailsAsync(int documentId);
         Task DeleteAsync(int documentId);
     }

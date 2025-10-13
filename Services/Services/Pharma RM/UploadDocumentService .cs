@@ -7,6 +7,7 @@ using Services.IServices.Pharma_RM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -68,23 +69,19 @@ namespace Services.Services.Pharma_RM
 
             return dto;
         }
-
-        public async Task<IEnumerable<UploadDocumentDto>> GetAllAsync()
+        
+        public async Task<PagedUploadDocumentDto> GetAllAsync(UploadDocumentRequestDto document)
         {
-            var entities = await _repository.UploadDocument.GetAllAsync();
-
-            var dtos = new List<UploadDocumentDto>();
-            foreach (var entity in entities)
+            try
             {
-                var dto = entity.Adapt<UploadDocumentDto>();
-
-                var category = await _repository.Category.GetByIdAsync(entity.CategoryId);
-                dto.CategoryName = category?.CategoryName;
-
-                dtos.Add(dto);
+                var documents = await _repository.UploadDocument.GetAllAsync(document);
+                return documents.Adapt<PagedUploadDocumentDto>();
+            }
+            catch (Exception e)
+            {
+                throw;
             }
 
-            return dtos;
         }
 
         public async Task<UploadDocumentDto?> UpdateAsync(int documentId, UploadDocumentUpdateDto dto, IFormFile? file)

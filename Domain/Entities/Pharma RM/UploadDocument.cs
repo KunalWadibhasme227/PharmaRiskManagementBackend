@@ -58,7 +58,7 @@ namespace Domain.Entities.Pharma_RM
 
     public class UploadDocumentUpdateFormModel
     {
-        public string DocumentName { get; set; }
+        public string? DocumentName { get; set; }
         public int CategoryId { get; set; }
         public string? Audit { get; set; }
         public string? Description { get; set; }
