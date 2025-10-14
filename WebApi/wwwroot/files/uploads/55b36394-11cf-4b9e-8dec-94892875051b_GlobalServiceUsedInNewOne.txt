@@ -1,0 +1,247 @@
+1. Create the Data Structures (Model & DTOs)
+You'll need a way to represent the data in the database and a way to transfer it via the API.
+
+A. Entity (Domain)
+Create the database model in your Domain layer (e.g., Domain/Entities/Pharma_RM/DocumentType.cs).
+
+C#
+
+// DocumentType.cs (Entity)
+public class DocumentType
+{
+    public int TypeId { get; set; } // Your typeid
+    public string TypeName { get; set; } // Your typename
+    public string TypeOfFile { get; set; } // Your typeoffile (e.g., PDF, DOCX, etc.)
+    // Add necessary tracking fields (e.g., CreatedDate, IsActive)
+}
+B. Data Transfer Objects (DTOs)
+Create DTOs in your Common layer (e.g., Common/Models/Dtos/Pharma_RM/Documents/DocumentTypeDto.cs).
+
+C#
+
+// DocumentTypeDto.cs (for Read/Response)
+public class DocumentTypeDto
+{
+    public int TypeId { get; set; }
+    public string TypeName { get; set; }
+    public string TypeOfFile { get; set; }
+}
+
+// DocumentTypeForCreationDto.cs (for Create)
+public class DocumentTypeForCreationDto
+{
+    [Required]
+    public string TypeName { get; set; }
+    [Required]
+    public string TypeOfFile { get; set; }
+}
+2. Implement Repository and Service Layers
+A. Repository Interface and Implementation
+This layer handles database access.
+
+Interface (IRepositories/IDocumentTypeRepository.cs): Define the CRUD contract.
+
+C#
+
+// IDocumentTypeRepository.cs
+public interface IDocumentTypeRepository
+{
+    Task<IEnumerable<DocumentType>> GetAllAsync();
+    Task<DocumentType> GetByIdAsync(int typeId);
+    void CreateType(DocumentType documentType);
+    void DeleteType(DocumentType documentType);
+    // Update is usually handled by loading, modifying, and saving
+}
+Implementation (Persistence/Repositories/DocumentTypeRepository.cs): Write the EF Core logic.
+
+C#
+
+// DocumentTypeRepository.cs
+public class DocumentTypeRepository : RepositoryBase<DocumentType>, IDocumentTypeRepository
+{
+    // Implement the methods using ApplicationDbContext and standard EF Core operations
+}
+Update IRepositoryManager and RepositoryManager to expose the new IDocumentTypeRepository.
+
+B. Service Interface and Implementation
+This layer holds the business logic, mapping, and calls the repository.
+
+Interface (IServices/Pharma_RM/IDocumentTypeService.cs):
+
+C#
+
+// IDocumentTypeService.cs
+public interface IDocumentTypeService
+{
+    Task<IEnumerable<DocumentTypeDto>> GetAllDocumentTypesAsync();
+    Task<DocumentTypeDto> GetDocumentTypeByIdAsync(int typeId);
+    Task<DocumentTypeDto> CreateDocumentTypeAsync(DocumentTypeForCreationDto creationDto);
+    Task UpdateDocumentTypeAsync(int typeId, DocumentTypeForCreationDto updateDto);
+    Task DeleteDocumentTypeAsync(int typeId);
+}
+Implementation (Services/Services/Pharma_RM/DocumentTypeService.cs): Use the IRepositoryManager to access the new repository. (You would use a mapper here, like Mapster or AutoMapper, to convert between DTOs and Entities).
+
+3. Register and Expose the Service
+You must make the new service available to your controllers.
+
+Update IServiceManager and ServiceManager to include the new IDocumentTypeService.
+
+C#
+
+// IServiceManager.cs
+public interface IServiceManager
+{
+    IDocumentTypeService DocumentTypeService { get; } // <--- New property
+    // ... other services
+}
+C#
+
+// ServiceManager.cs
+// Initialize the new service in the constructor
+_documentTypeService = new Lazy<IDocumentTypeService>(() => new DocumentTypeService(repository));
+// ...
+public IDocumentTypeService DocumentTypeService => _documentTypeService.Value;
+Update Program.cs to register the new service mapping. (If your ServiceManager is comprehensive, this might not be needed, but it's good practice for direct access).
+
+4. Create the Controller (API Exposure)
+Create a new controller to expose the API endpoints.
+
+C#
+
+// WebApi/Controllers/Pharma_RM/DocumentsFolder/DocumentTypesController.cs
+[Route("api/document-types")]
+[ApiController]
+public class DocumentTypesController : ControllerBase
+{
+    private readonly IServiceManager _serviceManager;
+
+    public DocumentTypesController(IServiceManager serviceManager)
+    {
+        _serviceManager = serviceManager;
+    }
+
+    // CREATE
+    [HttpPost]
+    public async Task<IActionResult> CreateDocumentType([FromBody] DocumentTypeForCreationDto creationDto)
+    {
+        var typeDto = await _serviceManager.DocumentTypeService.CreateDocumentTypeAsync(creationDto);
+        return CreatedAtAction(nameof(GetDocumentType), new { typeId = typeDto.TypeId }, typeDto);
+    }
+
+    // READ (All)
+    [HttpGet]
+    public async Task<IActionResult> GetAllDocumentTypes()
+    {
+        var types = await _serviceManager.DocumentTypeService.GetAllDocumentTypesAsync();
+        return Ok(types);
+    }
+
+    // READ (Single)
+    [HttpGet("{typeId}")]
+    public async Task<IActionResult> GetDocumentType(int typeId)
+    {
+        var typeDto = await _serviceManager.DocumentTypeService.GetDocumentTypeByIdAsync(typeId);
+        if (typeDto == null) return NotFound();
+        return Ok(typeDto);
+    }
+    
+    // ... Implement PUT (Update) and DELETE ...
+}
+
+
+
+
+1. Update the New Service
+The service responsible for the creation of a new file-related entity (e.g., DocumentTypeService, if it manages a new file type that needs an actual file template) must take the IFileUploadService as a dependency.
+
+Example: DocumentTypeService.cs
+C#
+
+// 1. Add using statement
+using Services.IServices.Pharma_RM; 
+
+public class DocumentTypeService : IDocumentTypeService
+{
+    private readonly IRepositoryManager _repoManager;
+    private readonly IFileUploadService _fileUploadService; // <--- The global service
+
+    // 2. Inject IFileUploadService into the constructor
+    public DocumentTypeService(IRepositoryManager repoManager, IFileUploadService fileUploadService)
+    {
+        _repoManager = repoManager;
+        _fileUploadService = fileUploadService;
+    }
+
+    // 3. Use the service in your Create method (if creation involves uploading a file)
+    public async Task<DocumentTypeDto> CreateDocumentTypeAsync(DocumentTypeForCreationDto creationDto, IFormFile templateFile)
+    {
+        // ------------------------------------------------------------------
+        // STEP A: Handle File Upload (using the global service)
+        // ------------------------------------------------------------------
+        // Assuming your DocumentType creation also involves uploading a template file
+        var fileResponse = await _fileUploadService.UploadFileAsync(
+            file: templateFile, 
+            documentType: "DOCUMENT_TYPE_TEMPLATE" // A specific folder for file type templates
+        );
+
+        // ------------------------------------------------------------------
+        // STEP B: Create Database Entity
+        // ------------------------------------------------------------------
+        var newType = new DocumentType
+        {
+            TypeName = creationDto.TypeName,
+            TypeOfFile = creationDto.TypeOfFile,
+            // Save the path returned by the global file service
+            TemplateFilePath = fileResponse.RelativeFilePath // <--- Save the path
+        };
+
+        _repoManager.DocumentType.CreateType(newType);
+        await _repoManager.SaveAsync();
+
+        // Map and return the DTO
+        return new DocumentTypeDto
+        {
+            TypeId = newType.TypeId,
+            TypeName = newType.TypeName,
+            TypeOfFile = newType.TypeOfFile
+            // ... include TemplateFilePath if needed
+        };
+    }
+    // ... other CRUD methods
+}
+2. Update the Service Manager (DI Chain)
+Since your DocumentTypeService now has a new dependency (IFileUploadService), you must update the service manager's initialization.
+
+Example: ServiceManager.cs
+C#
+
+// ServiceManager.cs
+
+public sealed class ServiceManager : IServiceManager
+{
+    // ... all Lazy fields ...
+    private readonly Lazy<IDocumentTypeService> _documentTypeService; // New service field
+
+    public ServiceManager(
+        IRepositoryManager repository, 
+        IWebHostEnvironment hostingEnvironment,
+        IFileUploadService fileUploadService) // <--- Inject the global service
+    {
+        // Initialize IFileUploadService (as previously fixed):
+        // _fileUploadService = new Lazy<IFileUploadService>(() => new FileService(hostingEnvironment));
+
+        // Initialize the new DocumentTypeService, passing the injected services
+        _documentTypeService = new Lazy<IDocumentTypeService>(() => 
+            new DocumentTypeService(repository, fileUploadService)); // <--- Pass it here
+        
+        // ... initialize other services ...
+    }
+    // ...
+}
+By following these steps, you maintain the separation of concerns:
+
+Controller: Handles the HTTP request and passes the IFormFile.
+
+DocumentTypeService (Business Layer): Uses the IFileUploadService to get the file path, and then uses the IRepositoryManager to save the file metadata (TemplateFilePath) to the database.
+
+FileService (Infrastructure Layer): Remains dedicated to only physical file saving.

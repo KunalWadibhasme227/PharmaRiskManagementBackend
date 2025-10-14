@@ -16,6 +16,7 @@ namespace Services.IServices.Pharma_RM
         Task<UploadDocumentDto?> GetByIdAsync(int documentId);
         Task<FileDownloadDto?> DownloadAsync(int documentId);
         Task<UploadDocumentDto?> ViewDetailsAsync(int documentId);
+        string UploadDirectory { get; }
         Task DeleteAsync(int documentId);
     }
 }

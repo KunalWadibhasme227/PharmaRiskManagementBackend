@@ -20,9 +20,10 @@ namespace Domain.Entities.Pharma_RM
         public string DocumentName { get; set; } = null!;
 
         public int CategoryId { get; set; }
+        public int AuditId { get; set; }
 
-        [MaxLength(250)]
-        public string? Audit { get; set; }
+        
+        //public string? Audit { get; set; }
 
         public string? Description { get; set; }
 
@@ -48,7 +49,8 @@ namespace Domain.Entities.Pharma_RM
     {
         public string? DocumentName { get; set; }
         public int CategoryId { get; set; }
-        public string? Audit { get; set; }
+        public int AuditId { get; set; }
+        //public string? Audit { get; set; }
         public string? Description { get; set; }
         public DateTime? ExpiryDate { get; set; }
         public DateTime? CreatedDate { get; set; }
@@ -60,7 +62,8 @@ namespace Domain.Entities.Pharma_RM
     {
         public string? DocumentName { get; set; }
         public int CategoryId { get; set; }
-        public string? Audit { get; set; }
+        public int AuditId { get; set; }
+        //public string? Audit { get; set; }
         public string? Description { get; set; }
         public DateTime? ExpiryDate { get; set; }
         public IFormFile? File { get; set; }

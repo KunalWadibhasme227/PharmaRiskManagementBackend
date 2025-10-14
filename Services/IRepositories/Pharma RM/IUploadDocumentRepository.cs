@@ -1,5 +1,6 @@
 ﻿using Common.Models.Dtos.Pharma_RM;
 using Domain.Entities.Pharma_RM;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,8 @@ namespace Services.IRepositories.Pharma_RM
         Task<PagedUploadDocumentDto> GetAllAsync(UploadDocumentRequestDto document);
         Task<int> CreateAsync(UploadDocument document);
         Task<UploadDocument?> GetByIdAsync(int documentId);
-        Task<bool> UpdateAsync(UploadDocument document);
+        //Task<bool> UpdateAsync(UploadDocument document);
+        Task<UploadDocument?> UpdateAsync(int documentId, UploadDocumentUpdateDto dto, IFormFile? file);
         Task<bool> DeleteAsync(int documentId);
         Task<string> GetCurrentVersionAsync(int documentId);
     }

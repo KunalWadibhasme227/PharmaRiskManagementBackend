@@ -42,7 +42,7 @@ public class AuditTypeService : IAuditTypeService
             throw;
         }
     }
-
+        
     public async Task<AuditTypeDto> CreateAsync(AuditTypeForCreationDto dto)
     {
         try

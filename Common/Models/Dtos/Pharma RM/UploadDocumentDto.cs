@@ -12,7 +12,9 @@ namespace Common.Models.Dtos.Pharma_RM
         public string DocumentName { get; set; } = null!;
         public int CategoryId { get; set; }
         public string? CategoryName { get; set; } 
-        public string? Audit { get; set; }
+        public int AuditId { get; set; } 
+        public string? AuditName { get; set; } 
+        //public string? Audit { get; set; }
         public string? Description { get; set; }
         public DateTime? ExpiryDate { get; set; }
         public DateTime CreatedDate { get; set; }
@@ -45,7 +47,8 @@ namespace Common.Models.Dtos.Pharma_RM
        
         public string DocumentName { get; set; } = null!;
         public int CategoryId { get; set; }
-        public string? Audit { get; set; }
+        public int AuditId { get; set; }
+        //public string? Audit { get; set; }
         public string? Description { get; set; }
         public string Version { get; set; } = null!;
         public string Status { get; set; } = null!;
@@ -59,7 +62,8 @@ namespace Common.Models.Dtos.Pharma_RM
     {
         public string DocumentName { get; set; } = null!;
         public int CategoryId { get; set; }
-        public string? Audit { get; set; }
+        public int AuditId { get; set; }
+        //public string? Audit { get; set; }
         public string? Description { get; set; }
         public DateTime? ExpiryDate { get; set; }
         public string? FilePath { get; set; }

@@ -67,6 +67,9 @@ namespace Services.Services.Pharma_RM
             var category = await _repository.Category.GetByIdAsync(entity.CategoryId);
             dto.CategoryName = category?.CategoryName;
 
+            var audit = await _repository.AuditType.GetByIdAsync(entity.AuditId);
+            dto.AuditName = audit?.TypeName;
+
             return dto;
         }
         
@@ -84,6 +87,9 @@ namespace Services.Services.Pharma_RM
 
         }
 
+        public string UploadDirectory { get; } = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/files/uploads");
+
+
         public async Task<UploadDocumentDto?> UpdateAsync(int documentId, UploadDocumentUpdateDto dto, IFormFile? file)
         {
             var existingDoc = await _repository.UploadDocument.GetByIdAsync(documentId);
@@ -93,24 +99,37 @@ namespace Services.Services.Pharma_RM
 
             if (file != null)
             {
-                string versionStr = existingDoc.Version.TrimStart('v');
-                if (int.TryParse(versionStr, out int versionNum))
+                if (!string.IsNullOrEmpty(existingDoc.FilePath))
                 {
-                    existingDoc.Version = $"v{versionNum + 1}";
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/files/uploads");
+                    var oldFilePath = Path.Combine(uploadsFolder, Path.GetFileName(existingDoc.FilePath));
+
+                    if (System.IO.File.Exists(oldFilePath))
+                        System.IO.File.Delete(oldFilePath);
                 }
 
                 var fileResponse = await _fileService.UploadFileAsync(file, DocumentType);
-                existingDoc.FilePath = fileResponse.RelativeFilePath;
+                existingDoc.FilePath = fileResponse.RelativeFilePath; 
                 existingDoc.FileSizeKB = (int)(file.Length / 1024);
+
+                string versionStr = existingDoc.Version.TrimStart('v');
+                if (int.TryParse(versionStr, out int versionNum))
+                    existingDoc.Version = $"v{versionNum + 1}";
+            }
+            else
+            {
+               
             }
 
-            await _repository.UploadDocument.UpdateAsync(existingDoc);
+            await _repository.UploadDocument.UpdateAsync(documentId, dto, file);
             await _repository.SaveAsync();
 
             var updatedDto = existingDoc.Adapt<UploadDocumentDto>();
-
             var category = await _repository.Category.GetByIdAsync(existingDoc.CategoryId);
             updatedDto.CategoryName = category?.CategoryName;
+
+            var audit = await _repository.AuditType.GetByIdAsync(existingDoc.AuditId);
+            updatedDto.AuditName = audit?.TypeName;
 
             return updatedDto;
         }
@@ -121,14 +140,6 @@ namespace Services.Services.Pharma_RM
             {
                 var entity = await _repository.UploadDocument.GetByIdAsync(documentId);
                 if (entity == null) return;
-
-                // Optional: Delete physical file first
-                // if (!string.IsNullOrEmpty(entity.FilePath))
-                // {
-                //     // You need a delete method in your IFileUploadService
-                //     // _fileService.DeleteFile(entity.FilePath); 
-                // }
-
                 await _repository.UploadDocument.DeleteAsync(documentId);
                 await _repository.SaveAsync();
             }
@@ -189,6 +200,10 @@ namespace Services.Services.Pharma_RM
 
             var dto = document.Adapt<UploadDocumentDto>();
             dto.CategoryName = category?.CategoryName;
+
+            var audit = await _repository.AuditType.GetByIdAsync(document.AuditId);
+
+            dto.AuditName = audit?.TypeName;
 
             return dto;
         }

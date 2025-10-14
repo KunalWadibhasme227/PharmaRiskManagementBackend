@@ -28,7 +28,8 @@ namespace WebApi.Controllers.Pharma_RM.DocumentsFolder
             {
                 DocumentName = model.DocumentName!,
                 CategoryId = model.CategoryId,
-                Audit = model.Audit,
+                AuditId = model.AuditId,
+                //Audit = model.Audit,
                 Description = model.Description,
                 CreatedDate = model.CreatedDate,
                 ExpiryDate = model.ExpiryDate,
@@ -68,7 +69,8 @@ namespace WebApi.Controllers.Pharma_RM.DocumentsFolder
             {
                 DocumentName = model.DocumentName,
                 CategoryId = model.CategoryId,
-                Audit = model.Audit,
+                AuditId = model.AuditId,
+                //Audit = model.Audit,
                 Description = model.Description,
                 ExpiryDate = model.ExpiryDate
             };

@@ -1,0 +1,110 @@
+using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace Persistence.Migrations
+{
+    /// <inheritdoc />
+    public partial class Migrationoncentralizeserver : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropForeignKey(
+                name: "FK_DocumentWorkflow_MasterGlobalCode_StageCodeId",
+                table: "DocumentWorkflow");
+
+            migrationBuilder.AddColumn<int>(
+                name: "DocumentId1",
+                table: "DocumentWorkflow",
+                type: "int",
+                nullable: true);
+
+            migrationBuilder.CreateTable(
+                name: "UploadDocuments",
+                columns: table => new
+                {
+                    DocumentId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DocumentName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    Audit = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Version = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    FilePath = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    FileSizeKB = table.Column<int>(type: "int", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UploadDocuments", x => x.DocumentId);
+                    table.ForeignKey(
+                        name: "FK_UploadDocuments_CategoryMaster_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "CategoryMaster",
+                        principalColumn: "CategoryId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DocumentWorkflow_DocumentId1",
+                table: "DocumentWorkflow",
+                column: "DocumentId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UploadDocuments_CategoryId",
+                table: "UploadDocuments",
+                column: "CategoryId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_DocumentWorkflow_Document_DocumentId1",
+                table: "DocumentWorkflow",
+                column: "DocumentId1",
+                principalTable: "Document",
+                principalColumn: "DocumentId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_DocumentWorkflow_MasterGlobalCode_StageCodeId",
+                table: "DocumentWorkflow",
+                column: "StageCodeId",
+                principalTable: "MasterGlobalCode",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropForeignKey(
+                name: "FK_DocumentWorkflow_Document_DocumentId1",
+                table: "DocumentWorkflow");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_DocumentWorkflow_MasterGlobalCode_StageCodeId",
+                table: "DocumentWorkflow");
+
+            migrationBuilder.DropTable(
+                name: "UploadDocuments");
+
+            migrationBuilder.DropIndex(
+                name: "IX_DocumentWorkflow_DocumentId1",
+                table: "DocumentWorkflow");
+
+            migrationBuilder.DropColumn(
+                name: "DocumentId1",
+                table: "DocumentWorkflow");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_DocumentWorkflow_MasterGlobalCode_StageCodeId",
+                table: "DocumentWorkflow",
+                column: "StageCodeId",
+                principalTable: "MasterGlobalCode",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+        }
+    }
+}

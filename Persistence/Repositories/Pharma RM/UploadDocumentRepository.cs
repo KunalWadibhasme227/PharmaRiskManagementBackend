@@ -1,6 +1,7 @@
 ﻿using Common.Models.Dtos.Pharma_RM;
 using Dapper;
 using Domain.Entities.Pharma_RM;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Services.IRepositories.Pharma_RM;
 using System.Collections.Generic;
@@ -68,15 +69,60 @@ namespace Persistence.Repositories.Pharma_RM
                                  .FirstOrDefaultAsync(d => d.DocumentId == documentId);
         }
 
-        public async Task<bool> UpdateAsync(UploadDocument document)
+        public async Task<UploadDocument?> UpdateAsync(int documentId, UploadDocumentUpdateDto dto, IFormFile? file)
         {
-            var existing = await _context.UploadDocuments.FindAsync(document.DocumentId);
-            if (existing == null) return false;
+            var existing = await _context.UploadDocuments.FindAsync(documentId);
+            if (existing == null) return null;
 
-            _context.Entry(existing).CurrentValues.SetValues(document);
+            existing.DocumentName = dto.DocumentName;
+            existing.CategoryId = dto.CategoryId;
+            existing.AuditId = dto.AuditId;
+            //existing.Audit = dto.Audit;
+            existing.Description = dto.Description;
+            existing.ExpiryDate = dto.ExpiryDate;
+
+            if (file != null)
+            {
+                var filePath = await SaveFileAsync(file);
+                existing.FilePath = filePath;
+                existing.FileSizeKB = (int) file.Length / 1024; 
+            }
+
+            var versionNumber = int.TryParse(existing.Version?.TrimStart('v'), out var v) ? v + 1 : 1;
+            existing.Version = "v" + versionNumber;
+
+            _context.Update(existing);
             await _context.SaveChangesAsync();
-            return true;
+
+            return existing;
         }
+
+        // Example helper method
+        private async Task<string> SaveFileAsync(IFormFile file)
+        {
+            var folder = Path.Combine("wwwroot", "files", "uploads");
+            if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+
+            var fileName = $"{Guid.NewGuid()}_{file.FileName}";
+            var filePath = Path.Combine(folder, fileName);
+
+            using var stream = new FileStream(filePath, FileMode.Create);
+            await file.CopyToAsync(stream);
+
+            return $"/files/uploads/{fileName}";
+        }
+
+
+
+        //public async Task<bool> UpdateAsync(UploadDocument document)
+        //{
+        //    var existing = await _context.UploadDocuments.FindAsync(document.DocumentId);
+        //    if (existing == null) return false;
+
+        //    _context.Entry(existing).CurrentValues.SetValues(document);
+        //    await _context.SaveChangesAsync();
+        //    return true;
+        //}
 
         public async Task<bool> DeleteAsync(int documentId)
         {

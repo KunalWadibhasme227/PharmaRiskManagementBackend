@@ -1,0 +1,15 @@
+
+"Hello Sir/Mam, my name is Harshita Mirase, and I am a Sr. Associate Delivery at Smart Data. 
+I’ve been working on PharmaTPR."
+
+The project we are working on is PharmaTPR. Its main goal is to  
+automate Audit Schedule. My role involves [developing the upload and retrieval module, 
+ensuring data integrity, and implementing user authentication]. Currently, we have completed Suppiler Management, 
+Audit Schedule, Findings Track."
+
+I have a few points I’d like to clarify regarding [specific feature/issue]. Currently, I’m unsure about [issue], 
+and I’d like your input on how you’d like it to work. One approach I’m considering is [your suggestion]. 
+Could you please advise which direction you prefer?"
+
+Thank you for your guidance. I’ll make the necessary updates once I have your feedback. 
+I’m looking forward to working closely with you to ensure this project meets your expectations."
