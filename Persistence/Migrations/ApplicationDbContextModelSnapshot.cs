@@ -22,41 +22,6 @@ namespace Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Common.Models.Dtos.Pharma_RM.AuditDetailDto", b =>
-                {
-                    b.Property<DateTime>("AuditDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("AuditId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("AuditTypeName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AuditorName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Comment")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("Score")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("StatusId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SupplierId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TotalCount")
-                        .HasColumnType("int");
-
-                    b.ToTable("AuditDetailDto");
-                });
-
             modelBuilder.Entity("Domain.Entities.Pharma_RM.Audit", b =>
                 {
                     b.Property<Guid>("AuditId")
@@ -67,6 +32,11 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("AuditDate")
                         .HasColumnType("datetime2")
                         .HasColumnName("AuditDate");
+
+                    b.Property<string>("AuditTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("AuditTitle");
 
                     b.Property<int>("AuditType")
                         .HasColumnType("int")
@@ -154,6 +124,146 @@ namespace Persistence.Migrations
                     b.ToTable("Auditor");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Pharma_RM.CategoryMaster", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("CategoryId");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("CategoryName");
+
+                    b.HasKey("CategoryId");
+
+                    b.ToTable("CategoryMaster");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Pharma_RM.Document", b =>
+                {
+                    b.Property<int>("DocumentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DocumentId"));
+
+                    b.Property<int>("CategoryDocumentsId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("ComplianceScore")
+                        .HasColumnType("decimal(5, 2)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DocumentTitle")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("FilePath")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsLatestVersion")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ReviewDueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("StatusCodeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("VersionNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("DocumentId");
+
+                    b.HasIndex("CategoryDocumentsId");
+
+                    b.HasIndex("StatusCodeId");
+
+                    b.ToTable("Document");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Pharma_RM.DocumentActionLog", b =>
+                {
+                    b.Property<int>("ActionLogId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ActionLogId"));
+
+                    b.Property<string>("ActionBy")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime>("ActionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ActionTypeCodeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DocumentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ActionLogId");
+
+                    b.HasIndex("ActionTypeCodeId");
+
+                    b.HasIndex("DocumentId");
+
+                    b.ToTable("DocumentActionLog");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Pharma_RM.DocumentWorkflow", b =>
+                {
+                    b.Property<int>("WorkflowId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WorkflowId"));
+
+                    b.Property<string>("AssignedTo")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<decimal?>("AvgProcessingTime")
+                        .HasColumnType("decimal(5, 2)");
+
+                    b.Property<int>("DocCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DocumentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StageCodeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("WorkflowId");
+
+                    b.HasIndex("DocumentId");
+
+                    b.HasIndex("StageCodeId");
+
+                    b.ToTable("DocumentWorkflow");
+                });
+
             modelBuilder.Entity("Domain.Entities.Pharma_RM.Finding", b =>
                 {
                     b.Property<Guid>("FindingId")
@@ -191,7 +301,221 @@ namespace Persistence.Migrations
 
                     b.HasKey("FindingId");
 
+                    b.HasIndex("AuditId");
+
                     b.ToTable("Finding");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Pharma_RM.MasterGlobalDocuments", b =>
+                {
+                    b.Property<int>("GlobalDocumentsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GlobalDocumentsId"));
+
+                    b.Property<string>("DocumentsName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("DocumentsType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("DocumentsValue")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("GlobalDocumentsId");
+
+                    b.HasIndex("DocumentsType", "DocumentsValue")
+                        .IsUnique();
+
+                    b.ToTable("MasterGlobalDocuments");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Pharma_RM.Material.HandlingProcedure", b =>
+                {
+                    b.Property<Guid>("ProcedureId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal?>("ComplianceScore")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DeletedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastReviewedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("OrganizationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProcedureName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int?>("StatusCodeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ProcedureId");
+
+                    b.ToTable("HandlingProcedures");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Pharma_RM.Material.MaterialStorageCondition", b =>
+                {
+                    b.Property<Guid>("StorageConditionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("CurrentHumidity")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("CurrentTemp")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("DeletedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastChecked")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("MaterialId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("OrganizationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RequiredHumidity")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("RequiredTemp")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("StatusCodeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("StorageConditionId");
+
+                    b.HasIndex("MaterialId");
+
+                    b.ToTable("MaterialStorageConditions");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Pharma_RM.Material.Materials", b =>
+                {
+                    b.Property<Guid>("MaterialId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("BatchNumber")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("CategoryCodeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DeletedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ManufacturingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MaterialName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int?>("OrganizationId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StatusCodeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("MaterialId");
+
+                    b.ToTable("Materials");
                 });
 
             modelBuilder.Entity("Domain.Entities.Shared.Cities", b =>
@@ -377,6 +701,81 @@ namespace Persistence.Migrations
                     b.ToTable("States");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Pharma_RM.Document", b =>
+                {
+                    b.HasOne("Domain.Entities.Shared.MasterGlobalCode", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryDocumentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Shared.MasterGlobalCode", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusCodeId");
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Status");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Pharma_RM.DocumentActionLog", b =>
+                {
+                    b.HasOne("Domain.Entities.Shared.MasterGlobalCode", "ActionType")
+                        .WithMany()
+                        .HasForeignKey("ActionTypeCodeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Pharma_RM.Document", "Document")
+                        .WithMany()
+                        .HasForeignKey("DocumentId");
+
+                    b.Navigation("ActionType");
+
+                    b.Navigation("Document");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Pharma_RM.DocumentWorkflow", b =>
+                {
+                    b.HasOne("Domain.Entities.Pharma_RM.Document", "Document")
+                        .WithMany("Workflows")
+                        .HasForeignKey("DocumentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Shared.MasterGlobalCode", "Stage")
+                        .WithMany()
+                        .HasForeignKey("StageCodeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Document");
+
+                    b.Navigation("Stage");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Pharma_RM.Finding", b =>
+                {
+                    b.HasOne("Domain.Entities.Pharma_RM.Audit", "Audit")
+                        .WithMany("Finding")
+                        .HasForeignKey("AuditId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Audit");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Pharma_RM.Material.MaterialStorageCondition", b =>
+                {
+                    b.HasOne("Domain.Entities.Pharma_RM.Material.Materials", "Material")
+                        .WithMany("StorageConditions")
+                        .HasForeignKey("MaterialId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Material");
+                });
+
             modelBuilder.Entity("Domain.Entities.Shared.Cities", b =>
                 {
                     b.HasOne("Domain.Entities.Shared.States", "State")
@@ -397,6 +796,21 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("MasterGlobalCodeType");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Pharma_RM.Audit", b =>
+                {
+                    b.Navigation("Finding");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Pharma_RM.Document", b =>
+                {
+                    b.Navigation("Workflows");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Pharma_RM.Material.Materials", b =>
+                {
+                    b.Navigation("StorageConditions");
                 });
 
             modelBuilder.Entity("Domain.Entities.Shared.MasterGlobalCodeType", b =>

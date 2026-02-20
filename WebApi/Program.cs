@@ -8,7 +8,9 @@ using Persistence.Repositories;
 using Serilog;
 using Services.IRepositories;
 using Services.IServices;
+using Services.IServices.Pharma_RM;
 using Services.Managers;
+using Services.Services.Pharma_RM;
 using WebApi.Configuration;
 using WebApi.Middleware;
 
@@ -71,9 +73,10 @@ builder.Services.AddCors(options =>
 
 #endregion
 
+//builder.Services.AddScoped<IFileUploadService, FileService>();
 
-builder.Services.AddScoped<IServiceManager, ServiceManager>();
-builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
+//builder.Services.AddScoped<IServiceManager, ServiceManager>();
+//builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddControllers();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<AuditTypeForCreationDtoValidator>();
@@ -90,6 +93,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 

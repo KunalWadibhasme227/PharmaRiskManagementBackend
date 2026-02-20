@@ -1,5 +1,6 @@
 ﻿using Common.Models.Dtos.Pharma_RM;
 using Domain.Entities.Pharma_RM;
+using Domain.Entities.Pharma_RM.Material;
 using Domain.Entities.Shared;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,15 +15,39 @@ namespace Persistence
         public DbSet<Audit> Audits { get; set; }
         public DbSet<Auditor> Auditors { get; set; }
         public DbSet<AuditTypeMaster> AuditTypeMasters { get; set; }
+        public DbSet<CategoryMaster> CategoryMasters { get; set; }
         public DbSet<MasterGlobalCode> MasterGlobalCode { get; set; }
         public DbSet<MasterGlobalCodeType> MasterGlobalCodeType { get; set; }
         public DbSet<States> States { get; set; }
         public DbSet<Cities> Cities { get; set; }
         public DbSet<Finding> Findings { get; set; }
+        public DbSet<Document> Documents { get; set; } = null!;
+        public DbSet<MasterGlobalDocuments> MasterGlobalDocuments { get; set; } = null!;
+        public DbSet<DocumentWorkflow> DocumentWorkflows { get; set; } = null!;
+        public DbSet<DocumentActionLog> DocumentActionLogs { get; set; } = null!;
+        public DbSet<UploadDocument> UploadDocuments { get; set; } = null!;
+
+        public DbSet<Materials> Materials { get; set; }
+        public DbSet<HandlingProcedure> HandlingProcedures { get; set; }
+        public DbSet<MaterialStorageCondition> MaterialStorageConditions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Global Question Bank
+            base.OnModelCreating(modelBuilder);
+
+            // Example configuration: ensure CodeType/CodeValue are unique indices
+            modelBuilder.Entity<MasterGlobalDocuments>()
+                .HasIndex(c => new { c.DocumentsType, c.DocumentsValue })
+                .IsUnique();
         }
+
+        // Implementation of BaseEntity audit fields (CreatedAt, ModifiedAt, etc.) would go here.
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            // Logic to update ModifiedDate, LastUpdated, etc., before saving changes.
+            return base.SaveChangesAsync(cancellationToken);
+        }
+    
+      
     }
 }

@@ -22,6 +22,7 @@ namespace Common.Models.Dtos.Pharma_RM
     public class AuditCreateDto
     {
         public int SupplierId { get; set; }
+        public string AuditTitle { get; set; }
         public int AuditType { get; set; }
         public DateTime AuditDate { get; set; }
         public int? LeadAuditor { get; set; }
@@ -33,6 +34,7 @@ namespace Common.Models.Dtos.Pharma_RM
     public class AuditUpdateDto
     {
         public Guid AuditId { get; set; }
+        public string AuditTitle { get; set; }
         public int SupplierId { get; set; }
         public int AuditType { get; set; }
         public DateTime AuditDate { get; set; }

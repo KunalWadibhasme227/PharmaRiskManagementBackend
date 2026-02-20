@@ -1,4 +1,4 @@
-﻿
+﻿using Microsoft.AspNetCore.Hosting;
 using Services.IRepositories;
 using Services.IServices;
 using Services.IServices.Pharma_RM;
@@ -14,16 +14,31 @@ namespace Services.Managers
         private readonly Lazy<ICommonService> _commonService;
         private readonly Lazy<IAuditService> _auditService;
         private readonly Lazy<IFindingService> _findingService;
-        public ServiceManager(IRepositoryManager repository)
+        private readonly Lazy<IDocumentService> _fileService;
+        private readonly Lazy<IDocumentService> _documentService;
+        private readonly Lazy<IFileUploadService> _fileUploadService;
+        private readonly Lazy<IUploadDocumentService> _uploadDocumentService;
+        private readonly Lazy<ICategoryService> _categoryService;
+        private readonly Lazy<IMaterialService> _materialService;
+        private readonly Lazy<IHandlingProcedure> _handlingProcedureService;
+        public ServiceManager(IRepositoryManager repository, IWebHostEnvironment hostingEnvironment)
         {
             _auditTypeService = new Lazy<IAuditTypeService>(() =>
                 new AuditTypeService(repository));
+            _categoryService = new Lazy<ICategoryService>(() =>
+                new CategoryService(repository));
             _auditorService = new Lazy<IAuditorService>(() =>
                 new AuditorService(repository));
 
             _auditService = new Lazy<IAuditService>(() => new AuditService(repository));
             _commonService = new Lazy<ICommonService>(() => new CommonService(repository));
             _findingService = new Lazy<IFindingService>(() => new FindingService(repository));
+            _fileUploadService = new Lazy<IFileUploadService>(() => new FileService(hostingEnvironment));
+            _uploadDocumentService = new Lazy<IUploadDocumentService>(() =>
+               new UploadDocumentService(repository,_fileUploadService.Value));
+            _materialService = new Lazy<IMaterialService>(() => new MaterialService(repository));
+            _handlingProcedureService = new Lazy<IHandlingProcedure>(() =>    new HandlingProcedureService(repository));
+
         }
 
         public IAuditTypeService AuditTypeService => _auditTypeService.Value;
@@ -31,5 +46,13 @@ namespace Services.Managers
         public ICommonService CommonService => _commonService.Value;
         public IAuditService AuditService => _auditService.Value;
         public IFindingService FindingService => _findingService.Value;
+        public IDocumentService FileService => _fileService.Value;
+        public IDocumentService DocumentService => _documentService.Value;
+        public IFileUploadService FileUploadService => _fileUploadService.Value;
+        public ICategoryService CategoryService => _categoryService.Value;
+
+        public IUploadDocumentService UploadDocumentService => _uploadDocumentService.Value;
+        public IMaterialService MaterialService => _materialService.Value;
+        public IHandlingProcedure HandlingProcedure => _handlingProcedureService.Value;
     }
 }

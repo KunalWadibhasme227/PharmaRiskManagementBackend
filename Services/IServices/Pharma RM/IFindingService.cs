@@ -11,6 +11,7 @@ namespace Services.IServices.Pharma_RM
     {
         Task<IEnumerable<FindingDto>> GetAllAsync(string? filter);
         Task<FindingDto?> GetByIdAsync(Guid id);
+        Task<GetFindingDto> GetByFindingIdAsync(Guid id);
         Task<FindingDto> CreateAsync(FindingForCreateDto dto);
         Task UpdateAsync(FindingForUpdateDto dto);
         Task DeleteAsync(Guid id);
